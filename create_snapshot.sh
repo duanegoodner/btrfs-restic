@@ -1,9 +1,5 @@
 #!/bin/bash
 
-
-
-
-
 create_snapshot() {
     local source_mount_point=$1
     local snapshot_name=$2
