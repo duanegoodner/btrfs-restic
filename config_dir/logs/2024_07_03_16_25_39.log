@@ -1,0 +1,126 @@
+[2024-07-03 16:25:39.231298] Creating local btrfs snapshot
+[2024-07-03 16:25:39.240176] Create a snapshot of '/' in '/.snapshots_tmp_restic/@'
+[2024-07-03 16:25:39.240680] Snapshot of / created at /.snapshots_tmp_restic/@
+[2024-07-03 16:25:39.240704] Sending incrementsl back up of /.snapshots_tmp_restic/@ to sftp:restic@192.168.50.210:/srv/client_backups/orchard/btrfs_restic/@
+[2024-07-03 16:25:39.244515] open repository
+[2024-07-03 16:25:39.897616] lock repository
+[2024-07-03 16:25:40.109601] using parent snapshot 4ebd36dd
+[2024-07-03 16:25:40.109709] load index files
+[2024-07-03 16:25:40.290277] start scan on [/.snapshots_tmp_restic/@]
+[2024-07-03 16:25:40.290318] start backup on [/.snapshots_tmp_restic/@]
+[2024-07-03 16:25:41.287270] scan finished in 1.390s: 214098 files, 10.858 GiB
+[2024-07-03 16:25:42.892704] 
+[2024-07-03 16:25:42.892740] Files:           0 new,     1 changed, 214097 unmodified
+[2024-07-03 16:25:42.892746] Dirs:            0 new,     7 changed, 15102 unmodified
+[2024-07-03 16:25:42.892750] Data Blobs:      0 new
+[2024-07-03 16:25:42.892754] Tree Blobs:      7 new
+[2024-07-03 16:25:42.892757] Added to the repository: 37.855 KiB (7.953 KiB stored)
+[2024-07-03 16:25:42.892761] 
+[2024-07-03 16:25:42.892765] processed 214098 files, 10.858 GiB in 0:02
+[2024-07-03 16:25:42.892768] snapshot 661f7bf9 saved
+[2024-07-03 16:25:43.074097] Delete subvolume (no-commit): '/.snapshots_tmp_restic/@'
+[2024-07-03 16:25:43.074901] Creating local btrfs snapshot
+[2024-07-03 16:25:43.100165] Create a snapshot of '/home' in '/.snapshots_tmp_restic/@home'
+[2024-07-03 16:25:43.101292] Snapshot of /home created at /.snapshots_tmp_restic/@home
+[2024-07-03 16:25:43.101332] Sending incrementsl back up of /.snapshots_tmp_restic/@home to sftp:restic@192.168.50.210:/srv/client_backups/orchard/btrfs_restic/@home
+[2024-07-03 16:25:43.113285] open repository
+[2024-07-03 16:25:43.649349] lock repository
+[2024-07-03 16:25:43.863984] using parent snapshot b0344d19
+[2024-07-03 16:25:43.864084] load index files
+[2024-07-03 16:25:44.019113] start scan on [/.snapshots_tmp_restic/@home]
+[2024-07-03 16:25:44.019168] start backup on [/.snapshots_tmp_restic/@home]
+[2024-07-03 16:25:44.627584] scan finished in 0.978s: 131735 files, 20.212 GiB
+[2024-07-03 16:25:45.692886] 
+[2024-07-03 16:25:45.692979] Files:          20 new,    33 changed, 131682 unmodified
+[2024-07-03 16:25:45.692998] Dirs:           18 new,    77 changed, 11928 unmodified
+[2024-07-03 16:25:45.693011] Data Blobs:     62 new
+[2024-07-03 16:25:45.693023] Tree Blobs:     94 new
+[2024-07-03 16:25:45.693036] Added to the repository: 35.154 MiB (21.416 MiB stored)
+[2024-07-03 16:25:45.693049] 
+[2024-07-03 16:25:45.693061] processed 131735 files, 20.212 GiB in 0:02
+[2024-07-03 16:25:45.693076] snapshot b4cc4e49 saved
+[2024-07-03 16:25:45.811605] Delete subvolume (no-commit): '/.snapshots_tmp_restic/@home'
+[2024-07-03 16:25:45.812306] Creating local btrfs snapshot
+[2024-07-03 16:25:45.835344] Create a snapshot of '/var/log' in '/.snapshots_tmp_restic/@var_log'
+[2024-07-03 16:25:45.835945] Snapshot of /var/log created at /.snapshots_tmp_restic/@var_log
+[2024-07-03 16:25:45.835967] Sending incrementsl back up of /.snapshots_tmp_restic/@var_log to sftp:restic@192.168.50.210:/srv/client_backups/orchard/btrfs_restic/@var_log
+[2024-07-03 16:25:45.840904] open repository
+[2024-07-03 16:25:46.374510] lock repository
+[2024-07-03 16:25:46.588042] using parent snapshot 52f28860
+[2024-07-03 16:25:46.588141] load index files
+[2024-07-03 16:25:46.593433] start scan on [/.snapshots_tmp_restic/@var_log]
+[2024-07-03 16:25:46.593502] start backup on [/.snapshots_tmp_restic/@var_log]
+[2024-07-03 16:25:46.594456] scan finished in 0.220s: 54 files, 131.238 MiB
+[2024-07-03 16:25:46.842487] 
+[2024-07-03 16:25:46.842612] Files:           0 new,     2 changed,    52 unmodified
+[2024-07-03 16:25:46.842640] Dirs:            0 new,     4 changed,     9 unmodified
+[2024-07-03 16:25:46.842659] Data Blobs:     63 new
+[2024-07-03 16:25:46.842676] Tree Blobs:      5 new
+[2024-07-03 16:25:46.842692] Added to the repository: 33.534 MiB (6.415 MiB stored)
+[2024-07-03 16:25:46.842707] 
+[2024-07-03 16:25:46.842723] processed 54 files, 131.238 MiB in 0:00
+[2024-07-03 16:25:46.842739] snapshot 0660f7ee saved
+[2024-07-03 16:25:46.869847] Delete subvolume (no-commit): '/.snapshots_tmp_restic/@var_log'
+[2024-07-03 16:25:46.871302] Creating local btrfs snapshot
+[2024-07-03 16:25:46.895670] Create a snapshot of '/var/cache' in '/.snapshots_tmp_restic/@var_cache'
+[2024-07-03 16:25:46.897300] Snapshot of /var/cache created at /.snapshots_tmp_restic/@var_cache
+[2024-07-03 16:25:46.897378] Sending incrementsl back up of /.snapshots_tmp_restic/@var_cache to sftp:restic@192.168.50.210:/srv/client_backups/orchard/btrfs_restic/@var_cache
+[2024-07-03 16:25:46.909629] open repository
+[2024-07-03 16:25:47.446835] lock repository
+[2024-07-03 16:25:47.660058] using parent snapshot 1f1ad7f2
+[2024-07-03 16:25:47.660158] load index files
+[2024-07-03 16:25:47.665760] start scan on [/.snapshots_tmp_restic/@var_cache]
+[2024-07-03 16:25:47.665859] start backup on [/.snapshots_tmp_restic/@var_cache]
+[2024-07-03 16:25:47.668934] scan finished in 0.222s: 123 files, 123.838 MiB
+[2024-07-03 16:25:47.679301] 
+[2024-07-03 16:25:47.679378] Files:           0 new,     0 changed,   123 unmodified
+[2024-07-03 16:25:47.679402] Dirs:            0 new,     1 changed,    53 unmodified
+[2024-07-03 16:25:47.679420] Data Blobs:      0 new
+[2024-07-03 16:25:47.679437] Tree Blobs:      1 new
+[2024-07-03 16:25:47.679453] Added to the repository: 378 B (302 B stored)
+[2024-07-03 16:25:47.679468] 
+[2024-07-03 16:25:47.679484] processed 123 files, 123.838 MiB in 0:00
+[2024-07-03 16:25:47.679502] snapshot 0c64c591 saved
+[2024-07-03 16:25:47.692505] Delete subvolume (no-commit): '/.snapshots_tmp_restic/@var_cache'
+[2024-07-03 16:25:47.694078] Creating local btrfs snapshot
+[2024-07-03 16:25:47.718159] Create a snapshot of '/var/spool' in '/.snapshots_tmp_restic/@var_spool'
+[2024-07-03 16:25:47.719845] Snapshot of /var/spool created at /.snapshots_tmp_restic/@var_spool
+[2024-07-03 16:25:47.719907] Sending incrementsl back up of /.snapshots_tmp_restic/@var_spool to sftp:restic@192.168.50.210:/srv/client_backups/orchard/btrfs_restic/@var_spool
+[2024-07-03 16:25:47.732255] open repository
+[2024-07-03 16:25:48.272047] lock repository
+[2024-07-03 16:25:48.484435] using parent snapshot 0984aaaa
+[2024-07-03 16:25:48.484597] load index files
+[2024-07-03 16:25:48.488364] start scan on [/.snapshots_tmp_restic/@var_spool]
+[2024-07-03 16:25:48.488475] start backup on [/.snapshots_tmp_restic/@var_spool]
+[2024-07-03 16:25:48.488985] scan finished in 0.217s: 4 files, 27 B
+[2024-07-03 16:25:48.498457] 
+[2024-07-03 16:25:48.498577] Files:           0 new,     0 changed,     4 unmodified
+[2024-07-03 16:25:48.498627] Dirs:            0 new,     1 changed,     9 unmodified
+[2024-07-03 16:25:48.498671] Data Blobs:      0 new
+[2024-07-03 16:25:48.498714] Tree Blobs:      1 new
+[2024-07-03 16:25:48.498756] Added to the repository: 378 B (302 B stored)
+[2024-07-03 16:25:48.498797] 
+[2024-07-03 16:25:48.498841] processed 4 files, 27 B in 0:00
+[2024-07-03 16:25:48.498888] snapshot d7aa9530 saved
+[2024-07-03 16:25:48.512392] Delete subvolume (no-commit): '/.snapshots_tmp_restic/@var_spool'
+[2024-07-03 16:25:48.513778] Creating local btrfs snapshot
+[2024-07-03 16:25:48.547313] Create a snapshot of '/var/tmp' in '/.snapshots_tmp_restic/@var_tmp'
+[2024-07-03 16:25:48.548808] Snapshot of /var/tmp created at /.snapshots_tmp_restic/@var_tmp
+[2024-07-03 16:25:48.548970] Sending incrementsl back up of /.snapshots_tmp_restic/@var_tmp to sftp:restic@192.168.50.210:/srv/client_backups/orchard/btrfs_restic/@var_tmp
+[2024-07-03 16:25:48.561724] open repository
+[2024-07-03 16:25:49.129042] lock repository
+[2024-07-03 16:25:49.341393] using parent snapshot 9a3504c5
+[2024-07-03 16:25:49.341500] load index files
+[2024-07-03 16:25:49.344665] start scan on [/.snapshots_tmp_restic/@var_tmp]
+[2024-07-03 16:25:49.344753] start backup on [/.snapshots_tmp_restic/@var_tmp]
+[2024-07-03 16:25:49.345474] scan finished in 0.216s: 15 files, 0 B
+[2024-07-03 16:25:49.357758] 
+[2024-07-03 16:25:49.357844] Files:           0 new,     0 changed,    15 unmodified
+[2024-07-03 16:25:49.357867] Dirs:            0 new,     1 changed,    20 unmodified
+[2024-07-03 16:25:49.357884] Data Blobs:      0 new
+[2024-07-03 16:25:49.357899] Tree Blobs:      1 new
+[2024-07-03 16:25:49.357915] Added to the repository: 378 B (303 B stored)
+[2024-07-03 16:25:49.357931] 
+[2024-07-03 16:25:49.357947] processed 15 files, 0 B in 0:00
+[2024-07-03 16:25:49.357963] snapshot 3ce0aa53 saved
+[2024-07-03 16:25:49.370692] Delete subvolume (no-commit): '/.snapshots_tmp_restic/@var_tmp'

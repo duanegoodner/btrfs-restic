@@ -1,0 +1,24 @@
+[2024-07-03 16:04:20.068253] Creating local btrfs snapshot
+[2024-07-03 16:04:20.073879] Create a snapshot of '/' in '/.snapshots_tmp_restic/@'
+[2024-07-03 16:04:20.074942] Snapshot of / created at /.snapshots_tmp_restic/@
+[2024-07-03 16:04:20.081749] Delete subvolume (no-commit): '/.snapshots_tmp_restic/@'
+[2024-07-03 16:04:20.082744] Creating local btrfs snapshot
+[2024-07-03 16:04:20.107415] Create a snapshot of '/home' in '/.snapshots_tmp_restic/@home'
+[2024-07-03 16:04:20.108877] Snapshot of /home created at /.snapshots_tmp_restic/@home
+[2024-07-03 16:04:20.118972] Delete subvolume (no-commit): '/.snapshots_tmp_restic/@home'
+[2024-07-03 16:04:20.120380] Creating local btrfs snapshot
+[2024-07-03 16:04:20.162087] Create a snapshot of '/var/log' in '/.snapshots_tmp_restic/@var_log'
+[2024-07-03 16:04:20.163367] Snapshot of /var/log created at /.snapshots_tmp_restic/@var_log
+[2024-07-03 16:04:20.171581] Delete subvolume (no-commit): '/.snapshots_tmp_restic/@var_log'
+[2024-07-03 16:04:20.172598] Creating local btrfs snapshot
+[2024-07-03 16:04:20.193590] Create a snapshot of '/var/cache' in '/.snapshots_tmp_restic/@var_cache'
+[2024-07-03 16:04:20.195069] Snapshot of /var/cache created at /.snapshots_tmp_restic/@var_cache
+[2024-07-03 16:04:20.205036] Delete subvolume (no-commit): '/.snapshots_tmp_restic/@var_cache'
+[2024-07-03 16:04:20.206327] Creating local btrfs snapshot
+[2024-07-03 16:04:20.221753] Create a snapshot of '/var/spool' in '/.snapshots_tmp_restic/@var_spool'
+[2024-07-03 16:04:20.223212] Snapshot of /var/spool created at /.snapshots_tmp_restic/@var_spool
+[2024-07-03 16:04:20.232963] Delete subvolume (no-commit): '/.snapshots_tmp_restic/@var_spool'
+[2024-07-03 16:04:20.234210] Creating local btrfs snapshot
+[2024-07-03 16:04:20.249905] Create a snapshot of '/var/tmp' in '/.snapshots_tmp_restic/@var_tmp'
+[2024-07-03 16:04:20.251284] Snapshot of /var/tmp created at /.snapshots_tmp_restic/@var_tmp
+[2024-07-03 16:04:20.260894] Delete subvolume (no-commit): '/.snapshots_tmp_restic/@var_tmp'
