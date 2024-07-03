@@ -1,8 +1,9 @@
 #!/bin/bash
 
-BACKUP_CONFIG_DIR=${HOME}/.restic
-LOG_DIR="$BACKUP_CONFIG_DIR"/logs
-DOT_ENV_FILE="$BACKUP_CONFIG_DIR"/.env
+# ###### Must assign value to CONFIG_DIR. This is parent dir of .env file #####
+CONFIG_DIR=
+LOG_DIR="$CONFIG_DIR"/logs
+DOT_ENV_FILE="$CONFIG_DIR"/.env
 
 load_dot_env() {
   # Load environment variables from .env file
@@ -21,14 +22,14 @@ check_preconditions() {
   fi
 
   # confirm ssh key is present
-  if [ ! -e "$KEYFILE" ]; then
+  if [ ! -e "$SSH_KEYFILE" ]; then
     echo "key file not found." >&2
     exit 1
   fi
 
-  # confirm SNAPSHOT_BASE_DIR exists
-  if [ ! -e "$SNAPSHOT_BASE_DIR" ]; then
-    echo "$SNAPSHOT_BASE_DIR (SNAPSHOT_BASE_DIR in .env) not found." >&2
+  # confirm BTRFS_SNAPSHOTS_DIR exists
+  if [ ! -e "$BTRFS_SNAPSHOTS_DIR" ]; then
+    echo "$BTRFS_SNAPSHOTS_DIR (BTRFS_SNAPSHOTS_DIR in .env) not found." >&2
     exit 1
   fi
 
@@ -51,7 +52,7 @@ create_log_file() {
 create_snapshot() {
   local source_mount=$1
   local snapshot_name=$2
-  local destination="${SNAPSHOT_BASE_DIR}/${snapshot_name}"
+  local destination="${BTRFS_SNAPSHOTS_DIR}/${snapshot_name}"
 
   # Create the snapshot
   sudo /usr/bin/btrfs subvolume snapshot "$source_mount" "$destination"
@@ -64,22 +65,22 @@ create_snapshot() {
 
 backup() {
 
-  export RESTIC_PASSWORD_FILE="$PASSWORD_FILE"
+  export RESTIC_PASSWORD_FILE="$RESTIC_REPOS_PASSWORD_FILE"
 
   # Loop through the mount points and create snapshots
-  for entry in "${BTRFS_MOUNT_POINTS[@]}"; do
+  for entry in "${BTRFS_SUBVOLUMES[@]}"; do
     IFS='=' read -r mount_point snapshot_name <<<"$entry"
 
     echo "Creating local btrfs snapshot"
-    cur_repo=sftp:"$RESTIC_USER"@"$RESTIC_SERVER":"$RESTIC_ROOT"/"$snapshot_name"
+    cur_repo=sftp:"$RESTIC_SERVER_USER"@"$RESTIC_SERVER":"$RESTIC_REPOS_DIR"/"$snapshot_name"
     create_snapshot "$mount_point" "$snapshot_name"
 
-    echo "Sending incrementsl back up of ${SNAPSHOT_BASE_DIR}/${snapshot_name} to ${cur_repo}"
-    "$HOME"/bin/restic_fullread -r "${cur_repo}" --verbose backup "${SNAPSHOT_BASE_DIR}/${snapshot_name}"
-    sudo /usr/bin/btrfs subvolume delete "${SNAPSHOT_BASE_DIR}/${snapshot_name}"
+    echo "Sending incrementsl back up of ${BTRFS_SNAPSHOTS_DIR}/${snapshot_name} to ${cur_repo}"
+    "$HOME"/bin/restic_fullread -r "${cur_repo}" --verbose backup "${BTRFS_SNAPSHOTS_DIR}/${snapshot_name}"
+    sudo /usr/bin/btrfs subvolume delete "${BTRFS_SNAPSHOTS_DIR}/${snapshot_name}"
   done
 
-  unset "$RESTIC_PASSWORD_FILE"
+  unset "$RESTIC_RESTIC_REPOS_PASSWORD_FILE"
 
 }
 
