@@ -124,41 +124,39 @@ someuser ALL=(ALL) NOPASSWD: /usr/bin/btrfs subvolume delete /.snapshots_tmp_res
 ```
 > [!IMPORTANT]
 > Order of entries in the `sudoers` files matters. If our original file looks like this:
-```
-# User privilege specification
-root    ALL=(ALL:ALL) ALL
-
-# Allow members of group sudo to execute any command
-%sudo   ALL=(ALL:ALL) ALL
-
-# User alias specification
-
-# See sudoers(5) for more information on "@include" directives:
-
-@includedir /etc/sudoers.d
-
-```
-then modifying to this should work:
-```
-# User privilege specification
-root    ALL=(ALL:ALL) ALL
-
-# Allow members of group sudo to execute any command
-%sudo   ALL=(ALL:ALL) ALL
-
-# User alias specification
-
-# Allow someuser to take btrfs subvolume snapshots without a password
-someuser ALL=(ALL) NOPASSWD: /usr/bin/btrfs subvolume snapshot *
-
-# Allow someuser to delete btrfs subvolumes in the /.snapshots_tmp_restic/ directory without a password
-someuser ALL=(ALL) NOPASSWD: /usr/bin/btrfs subvolume delete /.snapshots_tmp_restic/*
-
-# See sudoers(5) for more information on "@include" directives:
-
-@includedir /etc/sudoers.d
-
-```
+> ```
+> # User privilege specification
+> root    ALL=(ALL:ALL) ALL
+>
+> # Allow members of group sudo to execute any command
+> %sudo   ALL=(ALL:ALL) ALL
+>
+> # User alias specification
+> 
+> # See sudoers(5) for more information on "@include" directives:
+> 
+> @includedir /etc/sudoers.d
+> ```
+> then modifying to this should work:
+> ```
+> # User privilege specification
+> root    ALL=(ALL:ALL) ALL
+> 
+> # Allow members of group sudo to execute any command
+> %sudo   ALL=(ALL:ALL) ALL
+> 
+> # User alias specification
+> 
+> # Allow someuser to take btrfs subvolume snapshots without a password
+> someuser ALL=(ALL) NOPASSWD: /usr/bin/btrfs subvolume snapshot *
+> 
+> # Allow someuser to delete btrfs subvolumes in the /.snapshots_tmp_restic/ directory without a password
+> someuser ALL=(ALL) NOPASSWD: /usr/bin/btrfs subvolume delete /.snapshots_tmp_restic/*
+> 
+> # See sudoers(5) for more information on "@include" directives:
+> 
+> @includedir /etc/sudoers.d
+> ```
 
 
 
