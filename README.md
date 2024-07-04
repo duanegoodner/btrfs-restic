@@ -66,7 +66,7 @@ resticuser@restic-server$ exit
 
 #### b) Initialize the restic repositories
 
-The remote server does not need to have restic installed. We initialize paths on the remote server as restic repositories by doing the following from our local machine:
+The remote server does not need to have restic installed. We initialize paths on the remote server as restic repositories by doing the following from our local machine. We use the same password for all repositories.
 
 ```bash
 someuser@local-machine$ restic -r sftp:restic_user@restic_server:/srv/backups/my_machine/root init
@@ -78,7 +78,7 @@ someuser@local-machine$ restic -r sftp:restic_user@restic_server:/srv/backups/my
 # the repository. Losing your password means that your data is
 # irrecoverably lost.
 
-someuser@local-machine$ restic -r sftp:restic_user@restic_server:/srv/backups/my_machine/@home init
+someuser@local-machine$ restic -r sftp:restic_user@restic_server:/srv/backups/my_machine/home init
 # enter password for new repository: 
 # enter password again: 
 # created restic repository 728b152e1a at /srv/backups/my_machine/root
@@ -89,10 +89,97 @@ someuser@local-machine$ restic -r sftp:restic_user@restic_server:/srv/backups/my
 
 ```
 
+### 3. Save repository password to a local file
+
+```bash
+someuser@local-machine$ touch /home/someuser/securefolder/restic_repo_password
+someuser@local-machine$ chmod 0600 /home/someuser/securefolder/restic_repo_password
+someuser@local-machine$ echo "password-for-restic-repos" > /home/someuser/securefolder/restic_repo_password
+# Replace "pssword-for-restic-repos" with the password used when creating restic repositories
+```
+
+### 4. Create local directory for temporary storage of BTRFS snapshots
+For each subvolume we want to back up, our script created a BTRFS snapshot of that subvolume, sends the data to the restic repo, and then deletes the BTRFS snapshot. We need a fixed local location for these temporary snapshots for restic deduplication to work properly.
 
 
-### 3. Put shell script and .env  
+```bash
+someuser@local-machine$ sudo mkdir /.tmp_snapshots
+```
 
+### 5. Create local directory for log files
+
+```bash
+someuser@local-machine$ mkdir /home/someuser/.btrfs_restic_logs
+```
+
+### 6. Allow local user to run certain BTRFS commands without password
+
+```bash
+someuser@local-machine$ sudo visudo 
+```
+File `/etc/sudoers.tmp` should open in a terminal editor (likely `nano`). Add the following lines near the end of file:
+```bash
+someuser ALL=(ALL) NOPASSWD: /usr/bin/btrfs subvolume snapshot *
+someuser ALL=(ALL) NOPASSWD: /usr/bin/btrfs subvolume delete /.snapshots_tmp_restic/*
+```
+> [!IMPORTANT]
+> Order of entries in the `sudoers` files matters. If our original file looks like this:
+```
+# User privilege specification
+root    ALL=(ALL:ALL) ALL
+
+# Allow members of group sudo to execute any command
+%sudo   ALL=(ALL:ALL) ALL
+
+# User alias specification
+
+# See sudoers(5) for more information on "@include" directives:
+
+@includedir /etc/sudoers.d
+
+```
+then modifying to this should work:
+```
+# User privilege specification
+root    ALL=(ALL:ALL) ALL
+
+# Allow members of group sudo to execute any command
+%sudo   ALL=(ALL:ALL) ALL
+
+# User alias specification
+
+# Allow someuser to take btrfs subvolume snapshots without a password
+someuser ALL=(ALL) NOPASSWD: /usr/bin/btrfs subvolume snapshot *
+
+# Allow someuser to delete btrfs subvolumes in the /.snapshots_tmp_restic/ directory without a password
+someuser ALL=(ALL) NOPASSWD: /usr/bin/btrfs subvolume delete /.snapshots_tmp_restic/*
+
+# See sudoers(5) for more information on "@include" directives:
+
+@includedir /etc/sudoers.d
+
+```
+
+
+
+
+### 7. Enter values in `btrfs_restic.env`  
+```shell
+RESTIC_SERVER=192.168.2.3
+RESTIC_SERVER_USER=restic
+SSH_KEYFILE=/home/someuser/.ssh/for_restic_demo
+RESTIC_REPOS_DIR=/srv/backups/my_machine/
+RESTIC_REPOS_PASSWORD_FILE=/home/someuser/securefolder/restic_repo_password
+LOG_DIR=/home/someuser/.btrfs_restic_logs
+BTRFS_SNAPSHOTS_DIR=/.tmp_snapshots
+BTRFS_SUBVOLUMES=(
+    "/=@"
+    "/home=@home"
+)
+
+
+
+```
 
 
 

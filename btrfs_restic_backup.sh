@@ -9,9 +9,7 @@
 
 
 # ###### Must assign value to CONFIG_DIR. This is parent dir of .env file #####
-CONFIG_DIR=
-LOG_DIR="$CONFIG_DIR"/logs
-DOT_ENV_FILE="$CONFIG_DIR"/btrfs_restic.env
+DOT_ENV_FILE=btrfs_restic.env
 
 load_dot_env() {
   # Load environment variables from .env file
