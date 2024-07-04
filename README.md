@@ -55,13 +55,13 @@ ssh-add /home/someuser/.ssh/for_restic_demo
 
 Note that each repository needs to have the same immediate parent directory (in this case, `/srv/backups/my_machine`).
 
-```bash
-someuser@local-machine$ ssh resticuser@restic-server
+```html
+<b>someuser@local-machine$</b> ssh resticuser@restic-server
 
-resticuser@restic-server$ mkdir -p /srv/backups/my_machine
-resticuser@restic-server$ mkdir /srv/backups/my_machine/root
-resticuser@restic-server$ mkdir /srv/backups/my_machine/home
-resticuser@restic-server$ exit
+<b>resticuser@restic-server$</b> mkdir -p /srv/backups/my_machine
+<b>resticuser@restic-server$</b> mkdir /srv/backups/my_machine/root
+<b>resticuser@restic-server$</b> mkdir /srv/backups/my_machine/home
+<b>resticuser@restic-server$</b> exit
 ```
 
 #### b) Initialize the restic repositories
