@@ -3,12 +3,10 @@
 # btrfs_restic_backup.sh
 #
 # Description:
-#   This script takes snapshots of specified Btrfs subvolumes and sends these snapshots to a Restic repository.
-#   Before running, CONFIG_DIR must be set to a valid directory path, and this directory must contain a
-#   btrfs_restic.env file. See README.md for detailed instructions.
+# Takes snapshots of BTRFS subvolumes and sends thethe snapshot content to a Restic repository.
+# See README.md for details.
 
 
-# ###### Must assign value to CONFIG_DIR. This is parent dir of .env file #####
 DOT_ENV_FILE=btrfs_restic.env
 
 load_dot_env() {
