@@ -44,7 +44,7 @@ create_log_file() {
   current_time=$(date +"%Y_%m_%d_%H_%M_%S")
 
   # Define the filename with the current time
-  filename="${current_time}.log"
+  filename="restic-${current_time}.log"
 
   mkdir -p "$LOG_DIR"
   touch "$LOG_DIR"/"$filename"
