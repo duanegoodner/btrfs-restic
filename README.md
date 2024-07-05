@@ -1,5 +1,5 @@
 # btrfs_restic
-Takes snapshots of BTRFS sub-volumes, then sends in a filesystem agnostic form to a remote restic repository.
+Takes snapshots of BTRFS sub-volumes, then snapshotted data to a remote Restic repository.
 
 ## Requirements
 - Local system:
