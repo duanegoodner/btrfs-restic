@@ -184,8 +184,8 @@ From the project root directory, we can run the shell script with:
 <pre><code><b style="color: green;">someuser@local-machine$</b> ./btrfs_restic.sh</pre></code>
 
 The first time the script runs, output will look something like this:
-```
-Creating local btrfs snapshot
+
+<pre><code>Creating local btrfs snapshot
 Create a snapshot of '/' in '/.tmp_snapshots/root'
 Snapshot of / created at /.tmp_snapshots/root
 Sending incremental back up of /.tmp_snapshots/root to sftp:resticuser@192.168.2.3:/srv/backups/my_machine/root
@@ -198,7 +198,7 @@ load index files
 
 start scan on [/.tmp_snapshots/root]
 start backup on [/.tmp_snapshots/root]
-scan finished in 1.541s: 214906 files, 12.638 GiB
+<b style="color: red;">scan finished in 1.541s: 214906 files, 12.638 GiB
 
 Files:       214906 new,     0 changed,     0 unmodified
 Dirs:        15325 new,     0 changed,     0 unmodified
@@ -206,7 +206,7 @@ Data Blobs:  173603 new
 Tree Blobs:  14033 new
 Added to the repository: 9.056 GiB (3.948 GiB stored)
 
-processed 214906 files, 12.638 GiB in 0:24
+processed 214906 files, 12.638 GiB in 0:24</b>
 snapshot 74d3f3e4 saved
 Delete subvolume (no-commit): '/.tmp_snapshots/root'
 Creating local btrfs snapshot
@@ -222,7 +222,7 @@ load index files
 
 start scan on [/.tmp_snapshots/home]
 start backup on [/.tmp_snapshots/home]
-scan finished in 1.096s: 154685 files, 20.819 GiB
+<b style="color: red;">scan finished in 1.096s: 154685 files, 20.819 GiB
 
 Files:       154685 new,     0 changed,     0 unmodified
 Dirs:        14329 new,     0 changed,     0 unmodified
@@ -230,44 +230,19 @@ Data Blobs:  136913 new
 Tree Blobs:  12721 new
 Added to the repository: 19.646 GiB (11.860 GiB stored)
 
-processed 154685 files, 20.819 GiB in 1:23
+processed 154685 files, 20.819 GiB in 1:23</b>
 snapshot fcba43e9 saved
 Delete subvolume (no-commit): '/.tmp_snapshots/home'
-```
-If we run the script again, the output will look similar. However, assuming we have not made significant changes to the local date under `/` and `/home`, the script will run much faster. Instead of lines like these:
-```
-start scan on [/.tmp_snapshots/root]
-start backup on [/.tmp_snapshots/root]
-scan finished in 1.541s: 214906 files, 12.638 GiB
-
-Files:       214906 new,     0 changed,     0 unmodified
-Dirs:        15325 new,     0 changed,     0 unmodified
-Data Blobs:  173603 new
-Tree Blobs:  14033 new
-Added to the repository: 9.056 GiB (3.948 GiB stored)
-
-processed 214906 files, 12.638 GiB in 0:24
-```
-```
-start scan on [/.tmp_snapshots/home]
-start backup on [/.tmp_snapshots/home]
-scan finished in 1.096s: 154685 files, 20.819 GiB
-
-Files:       154685 new,     0 changed,     0 unmodified
-Dirs:        14329 new,     0 changed,     0 unmodified
-Data Blobs:  136913 new
-Tree Blobs:  12721 new
-Added to the repository: 19.646 GiB (11.860 GiB stored)
-
-processed 154685 files, 20.819 GiB in 1:23
-```
+</code></pre>
 
 
 
-```
-start scan on [/.tmp_snapshots/root]
-start backup on [/.tmp_snapshots/root]
-scan finished in 1.431s: 214907 files, 12.638 GiB
+
+
+
+
+<pre><code>start backup on [/.tmp_snapshots/root]
+<b style="color: green;">scan finished in 1.431s: 214907 files, 12.638 GiB
 
 Files:           1 new,     1 changed, 214905 unmodified
 Dirs:            0 new,     7 changed, 15318 unmodified
@@ -275,10 +250,14 @@ Data Blobs:      1 new
 Tree Blobs:      8 new
 Added to the repository: 88.900 KiB (51.873 KiB stored)
 
-processed 214907 files, 12.638 GiB in 0:03
-start scan on [/.tmp_snapshots/home]
+processed 214907 files, 12.638 GiB in 0:03</b>
+snapshot 5b3a6ac4 saved
+</code></pre>
+
+
+<pre><code>
 start backup on [/.tmp_snapshots/home]
-scan finished in 1.169s: 154763 files, 20.835 GiB
+<b style="color: green;">scan finished in 1.169s: 154763 files, 20.835 GiB
 
 Files:         284 new,   128 changed, 154351 unmodified
 Dirs:           14 new,    86 changed, 14243 unmodified
@@ -286,5 +265,6 @@ Data Blobs:    433 new
 Tree Blobs:     99 new
 Added to the repository: 68.053 MiB (34.121 MiB stored)
 
-processed 154763 files, 20.835 GiB in 0:02
-```
+processed 154763 files, 20.835 GiB in 0:02</b>
+snapshot c3a67556 saved
+</code></pre>
