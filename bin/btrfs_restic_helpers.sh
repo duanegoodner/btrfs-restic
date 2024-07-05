@@ -6,13 +6,15 @@
 # Takes snapshots of BTRFS subvolumes and sends thethe snapshot content to a Restic repository.
 # See README.md for details.
 
-
-DOT_ENV_FILE=btrfs_restic.env
+# shellcheck source=./btrfs_restic_helpers.sh
+DOT_ENV_FILE=../btrfs_restic.env
 
 load_dot_env() {
-  # Load environment variables from .env file
-  if [ -f "$DOT_ENV_FILE" ]; then
-    source "$DOT_ENV_FILE"
+  
+  local dot_env=$1
+
+  if [ -f "$dot_env" ]; then
+    source "$dot_env"
   else
     echo ".env file not found." >&2
     exit 1
@@ -59,8 +61,8 @@ create_snapshot() {
   local destination="${BTRFS_SNAPSHOTS_DIR}/${snapshot_name}"
 
   # Create the snapshot
-  sudo /usr/bin/btrfs subvolume snapshot "$source_mount" "$destination"
-  if [ $? -eq 0 ]; then
+  if sudo /usr/bin/btrfs subvolume snapshot "$source_mount" "$destination"; then
+  # if [ $? -eq 0 ]; then
     echo "Snapshot of $source_mount created at $destination"
   else
     echo "Failed to create snapshot of $source_mount"
@@ -88,7 +90,7 @@ backup() {
 
 }
 
-run () {
+run_backup () {
   if [[ "$TIMESTAMP_LOG" == true ]]; then
   backup 2>&1 | tee >(ts '[%Y-%m-%d %H:%M:%.S]' >> "$BTRFS_RESTIC_LOG_FILE")
 else
@@ -96,7 +98,3 @@ else
 fi
 }
 
-load_dot_env
-check_preconditions
-create_log_file
-run
