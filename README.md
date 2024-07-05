@@ -8,7 +8,10 @@ Takes snapshots of BTRFS sub-volumes, then sends in a filesystem agnostic form t
 
 ## Example
 
-In this example, our local machine has BTRFS subvolumes `@` mounted at `/`, and `@home` mounted at `/home`. We want to use local user `someuser` to periodically take BTRFS snapshots of these subvolumes and send the snapshotted data as incremental backups to restic repositories located under `/srv/backups/my_machine` remote host `restic-server` at ip address `192.168.2.3` where we can access user account `resticuser`.
+In this example, we have the following scenario:
+- `local-machine` has BTRFS subvolumes `@` mounted at `/`, and `@home` mounted at `/home`.
+- User account `someuser` on `local-machine`
+- Remote host `restic-server` at ip address `192.168.2.3` with user account `resticuser`
 
 
 ### 1. Set up passwordless ssh
