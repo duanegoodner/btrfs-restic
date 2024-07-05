@@ -1,3 +1,4 @@
-
 *password*
+
+# Default setting in .env creates log dir in repo root
 /logs/
