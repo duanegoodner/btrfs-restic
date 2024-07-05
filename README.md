@@ -267,28 +267,8 @@ processed 154763 files, 20.835 GiB in 0:02</b>
 snapshot c3a67556 saved
 </code></pre>
 
-The `scan finished` times for the backup of `/` are similar (1.541 seconds vs. 1.431 seconds), but since restic allows incremental backups with very fast de-duplication, the `processsed` time and data `Added to the repository` values are much smaller for the second run (24 s / 9.056 GiB vs. 3 s / 88.900 KiB) 
+Since restic backups are incremental with very fast data de-duplication, `Processsed Time` and `Data Added` values are much smaller for the second run
 
-Looking at the output from the second-run backup of `/home` we similar
-
-
-<style>
-  table {
-    border-collapse: collapse;
-    width: 100%;
-  }
-  th, td {
-    border: 1px solid black;
-    padding: 8px;
-    text-align: left;
-  }
-  th {
-    background-color: #f2f2f2;
-  }
-  .center {
-    text-align: center;
-  }
-</style>
 
 <table>
   <thead>
@@ -298,9 +278,9 @@ Looking at the output from the second-run backup of `/home` we similar
       <th colspan="2" class="center">Home</th>
     </tr>
     <tr>
-      <th>Processed Time</th>
+      <th>Process Time</th>
       <th>Data Added</th>
-      <th>Processed Time</th>
+      <th>Process Time</th>
       <th>Data Added</th>
     </tr>
   </thead>
@@ -309,14 +289,14 @@ Looking at the output from the second-run backup of `/home` we similar
       <td>1</td>
       <td>24 sec</td>
       <td>12.638 GiB</td>
-      <td>83 s</td>
+      <td>83 sec</td>
       <td>19.646 GiB</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>3 s</td>
+      <td>3 sec</td>
       <td>88.900 KiB</td>
-      <td>2 s</td>
+      <td>2 sec</td>
       <td>68.053 MiB</td>
     </tr>
   </tbody>
