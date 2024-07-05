@@ -8,9 +8,9 @@ Takes snapshots of BTRFS sub-volumes, then sends in a filesystem agnostic form t
 - openssh
 - user account on a remote server accessible by ssh
 
-## Simple Example
+## Example
 
-In this example, our local machine has BTRFS subvolumes `@` mounted at `/`, and `@home` mounted at `/home`. We want to use local user `someuser` to periodically take BTRFS snapshots of these subvolumes, and send the snapshotted data as incremental backups to restic repositories located under `/srv/backups/my_machine` remote host `restic-server` at ip address `192.168.2.3` where we can access user account `resticuser`.
+In this example, our local machine has BTRFS subvolumes `@` mounted at `/`, and `@home` mounted at `/home`. We want to use local user `someuser` to periodically take BTRFS snapshots of these subvolumes and send the snapshotted data as incremental backups to restic repositories located under `/srv/backups/my_machine` remote host `restic-server` at ip address `192.168.2.3` where we can access user account `resticuser`.
 
 
 ### 1. Set up passwordless ssh
@@ -154,8 +154,6 @@ someuser ALL=(ALL) NOPASSWD: /usr/bin/btrfs subvolume delete /.snapshots_tmp_res
 > ```
 
 
-
-
 ### 7. Enter values in `btrfs_restic.env`  
 ```shell
 RESTIC_SERVER=192.168.2.3
@@ -169,22 +167,9 @@ BTRFS_SUBVOLUMES=(
     "/=@"
     "/home=@home"
 )
-
-
-
 ```
 
+### 8. Run `btrfs_restic.sh`
 
-
-
-
-1. On the remote server, create a parent directory where restic repositories will be stored. Create a sub-directory for each local BTRFS subvolume you want to back up, and create a restic repository in each of these subdirectories.
-    ```
-    mkdir /path/to/restic/parent/dir
-    mkdir /path/to/restic/parent/dir/
-    ```
-2. For each local BTRFS subvolume that you want to take snapshots/backups of, create a restic repository on the remote
-
-
-
+<pre><code><b style="color: green;">someuser@local-machine$</b> ./btrfs_restic.sh</pre></code>
 
