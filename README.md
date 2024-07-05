@@ -167,6 +167,12 @@ BTRFS_SUBVOLUMES=(
 )
 ```
 
+> [!NOTE]
+> Each item in `BTRFS` subvolumes is entered as `<mount point>=<subvolume name>`. We can get info about our subvolumes and mount points with:
+> <pre><code><b style="color: green;">someuser@local-machine$</b> sudo btrfs subolume list /
+> <b style="color: green;">someuser@local-machine$</b> sudo findmnt -nt btrfs
+> </pre></code>
+
 ### 8. Run `btrfs_restic.sh`
 
 <pre><code><b style="color: green;">someuser@local-machine$</b> ./btrfs_restic.sh</pre></code>
