@@ -2,11 +2,9 @@
 Takes snapshots of BTRFS sub-volumes, then sends in a filesystem agnostic form to a remote restic repository.
 
 ## Requirements
-- a Linux system with one or more BTRFS subvolumes
-- btrfs-progs
-- restic
-- openssh
-- user account on a remote server accessible by ssh
+- Local System: Linux machine with one or more BTRFS subvolumes
+- Packages: btrfs-progs, restic, openssh
+- Remote Server: has a user account accessible by ssh
 
 ## Example
 
