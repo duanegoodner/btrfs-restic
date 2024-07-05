@@ -91,4 +91,4 @@ backup() {
 load_dot_env
 check_preconditions
 create_log_file
-backup 2>&1 | ts '[%Y-%m-%d %H:%M:%.S]' | tee -a "$BTRFS_RESTIC_LOG_FILE"
+backup 2>&1 | tee >(ts '[%Y-%m-%d %H:%M:%.S]' >> "$BTRFS_RESTIC_LOG_FILE")
