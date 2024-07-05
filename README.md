@@ -100,13 +100,7 @@ For each subvolume we want to back up, our script created a BTRFS snapshot of th
 
 <pre><code><b style="color: green;">someuser@local-machine$</b> sudo mkdir /.tmp_snapshots</code></pre>
 
-
-### 5. Create local directory for log files
-
-<pre><code><b style="color: green;">someuser@local-machine$</b> mkdir /home/someuser/.btrfs_restic_logs</code></pre>
-
-
-### 6. Allow local user to run certain BTRFS commands without password
+### 5. Allow local user to run certain BTRFS commands without password
 
 <pre><code><b style="color: green;">someuser@local-machine$</b> sudo visudo</code></pre>
 
@@ -151,29 +145,29 @@ someuser ALL=(ALL) NOPASSWD: /usr/bin/btrfs subvolume delete /.snapshots_tmp_res
 > @includedir /etc/sudoers.d
 > ```
 
-
-### 7. Enter values in `btrfs_restic.env`  
+### 6. Enter values in `btrfs_restic.env`  
 ```shell
 RESTIC_SERVER=192.168.2.3
 RESTIC_SERVER_USER=restic
 SSH_KEYFILE=/home/someuser/.ssh/for_restic_demo
 RESTIC_REPOS_DIR=/srv/backups/my_machine/
 RESTIC_REPOS_PASSWORD_FILE=/home/someuser/securefolder/restic_repo_password
-LOG_DIR=/home/someuser/.btrfs_restic_logs
 BTRFS_SNAPSHOTS_DIR=/.tmp_snapshots
 BTRFS_SUBVOLUMES=(
     "/=@"
     "/home=@home"
 )
+LOG_DIR=./logs
+TIMESTAMP_LOG=true
 ```
 
-> [!NOTE]
-> Each item in `BTRFS` subvolumes is entered as `<mount point>=<subvolume name>`. We can get info about our subvolumes and mount points with:
-> <pre><code><b style="color: green;">someuser@local-machine$</b> sudo btrfs subolume list /
-> <b style="color: green;">someuser@local-machine$</b> sudo findmnt -nt btrfs
-> </pre></code>
 
-### 8. Run `btrfs_restic.sh`
+Each item in `BTRFS` subvolumes is entered as `<mount point>=<subvolume name>`. We can get info about our subvolumes and mount points with:
+<pre><code><b style="color: green;">someuser@local-machine$</b> sudo btrfs subolume list /
+<b style="color: green;">someuser@local-machine$</b> sudo findmnt -nt btrfs
+</pre></code>
+
+### 7. Run `btrfs_restic.sh`
 
 <pre><code><b style="color: green;">someuser@local-machine$</b> ./btrfs_restic.sh</pre></code>
 
