@@ -2,9 +2,19 @@
 Takes snapshots of BTRFS sub-volumes, then sends in a filesystem agnostic form to a remote restic repository.
 
 ## Requirements
-- Local System: Linux machine with one or more BTRFS subvolumes
-- Packages: btrfs-progs, restic, openssh
-- Remote Server: has a user account accessible by ssh
+- Local system:
+  - Linux machine with one or more BTRFS subvolumes. Packages: 
+  - Packages: btrfs-progs, restic, openssh
+- Remote Server
+  - Packages: openssh-server
+
+## Motivation
+
+With BTRFS filesystems, we have the ability to take atomic snapshots of subvolumes. While it is possible to use `btrfs send` and `btrfs receive` to transfer snapshots between hosts, this requires both the sending and receiving host to use BTRFS. Getting a automated passwodless "BTRFS snapshot + BTRFS send/receive" schemes to work can also be challenging if we are unable log in as `root` on the receiving server.
+
+The Restic backup program is filesystem agnostic on the receiving server, automatically encrypts data prior to transfer, and implements very fast data deduplication for incremental backups. However, unlike BTRFS, Restic's "snapshots" are not atomic.
+
+With a backup scheme that takes BTRFS snapshots on one system, and then sends data to a remote server via Restic, we can enjoy key advantages and avoid downsides of both BTRFS and Restic. 
 
 ## Example
 
@@ -274,8 +284,8 @@ Since restic backups are incremental with very fast data de-duplication, `Proces
   <thead>
     <tr>
       <th rowspan="2">Run #</th>
-      <th colspan="2" class="center">Root</th>
-      <th colspan="2" class="center">Home</th>
+      <th colspan="2" class="center">Root Repo</th>
+      <th colspan="2" class="center">Home Repo</th>
     </tr>
     <tr>
       <th>Process Time</th>
