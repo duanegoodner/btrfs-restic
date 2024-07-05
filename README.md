@@ -11,7 +11,7 @@ Takes snapshots of BTRFS sub-volumes, then sends in a filesystem agnostic form t
 In this example, we have the following scenario:
 - `local-machine` has BTRFS subvolumes `@` mounted at `/`, and `@home` mounted at `/home`.
 - User account `someuser` on `local-machine`
-- Remote host `restic-server` at ip address `192.168.2.3` with user account `resticuser`
+- Remote host `restic-server` at ip address `192.168.2.3` with user account `resticuser` that is a member of the `sudo` group. If this user does not have sudo privileges, there are workarounds, but we willl  not cover those here.
 
 
 ### 1. Set up passwordless ssh
@@ -56,8 +56,9 @@ Identity added: /home/someuser/.ssh/for_restic_demo (someuser@local-machine)</sp
 
 Note that each repository needs to have the same immediate parent directory (in this case, `/srv/backups/my_machine`).
 
-<pre><code><b style="color: green;">someuser@local-machine$</b> ssh resticuser@restic-server
-<b style="color: orange;">resticuser@restic-server$</b> mkdir -p /srv/backups/my_machine
+<pre><code><b style="color: green;">someuser@local-machine$</b> ssh resticuser@192.168.2.3
+<b style="color: orange;">resticuser@restic-server$</b> sudo mkdir -p /srv/backups/my_machine
+<b style="color: orange;">resticuser@restic-server$</b> sudo chown resticuser:resticuser /srv/backups/my_machine
 <b style="color: orange;">resticuser@restic-server$</b> mkdir /srv/backups/my_machine/root
 <b style="color: orange;">resticuser@restic-server$</b> mkdir /srv/backups/my_machine/home
 <b style="color: orange;">resticuser@restic-server$</b> exit
@@ -151,7 +152,7 @@ someuser ALL=(ALL) NOPASSWD: /usr/bin/btrfs subvolume delete /.snapshots_tmp_res
 ### 6. Enter values in `btrfs_restic.env`  
 ```shell
 RESTIC_SERVER=192.168.2.3
-RESTIC_SERVER_USER=restic
+RESTIC_SERVER_USER=resticuser
 SSH_KEYFILE=/home/someuser/.ssh/for_restic_demo
 RESTIC_REPOS_DIR=/srv/backups/my_machine/
 RESTIC_REPOS_PASSWORD_FILE=/home/someuser/securefolder/restic_repo_password
@@ -178,5 +179,108 @@ TIMESTAMP_LOG=false
 
 ### 7. Run `btrfs_restic.sh`
 
+From the project root directory, we can run the shell script with:
+
 <pre><code><b style="color: green;">someuser@local-machine$</b> ./btrfs_restic.sh</pre></code>
 
+The first time the script runs, output will look something like this:
+```
+Creating local btrfs snapshot
+Create a snapshot of '/' in '/.snapshots_tmp_restic/root'
+Snapshot of / created at /.snapshots_tmp_restic/root
+Sending incremental back up of /.snapshots_tmp_restic/root to sftp:resticuser@192.168.2.3:/srv/backups/my_machine/root
+open repository
+repository 76b8c9e7 opened (version 2, compression level auto)
+created new cache in /home/someuser/.cache/restic
+lock repository
+no parent snapshot found, will read all files
+load index files
+
+start scan on [/.snapshots_tmp_restic/root]
+start backup on [/.snapshots_tmp_restic/root]
+scan finished in 1.541s: 214906 files, 12.638 GiB
+
+Files:       214906 new,     0 changed,     0 unmodified
+Dirs:        15325 new,     0 changed,     0 unmodified
+Data Blobs:  173603 new
+Tree Blobs:  14033 new
+Added to the repository: 9.056 GiB (3.948 GiB stored)
+
+processed 214906 files, 12.638 GiB in 0:24
+snapshot 74d3f3e4 saved
+Delete subvolume (no-commit): '/.snapshots_tmp_restic/root'
+Creating local btrfs snapshot
+Create a snapshot of '/home' in '/.snapshots_tmp_restic/home'
+Snapshot of /home created at /.snapshots_tmp_restic/home
+Sending incrementsl back up of /.snapshots_tmp_restic/home to sftp:restic@192.168.2.3:/srv/backups/my_machine/home
+open repository
+repository da8633e3 opened (version 2, compression level auto)
+created new cache in /home/someuser/.cache/restic
+lock repository
+no parent snapshot found, will read all files
+load index files
+
+start scan on [/.snapshots_tmp_restic/home]
+start backup on [/.snapshots_tmp_restic/home]
+scan finished in 1.096s: 154685 files, 20.819 GiB
+
+Files:       154685 new,     0 changed,     0 unmodified
+Dirs:        14329 new,     0 changed,     0 unmodified
+Data Blobs:  136913 new
+Tree Blobs:  12721 new
+Added to the repository: 19.646 GiB (11.860 GiB stored)
+
+processed 154685 files, 20.819 GiB in 1:23
+snapshot fcba43e9 saved
+Delete subvolume (no-commit): '/.snapshots_tmp_restic/home'
+```
+If we run the script again, we should get somewthing like this:
+
+```
+Creating local btrfs snapshot
+Create a snapshot of '/' in '/.snapshots_tmp_restic/root'
+Snapshot of / created at /.snapshots_tmp_restic/root
+Sending incrementsl back up of /.snapshots_tmp_restic/root to sftp:resticuser@192.168.2.3:/srv/backups/my_machine/root
+open repository
+repository 76b8c9e7 opened (version 2, compression level auto)
+lock repository
+using parent snapshot 74d3f3e4
+load index files
+[0:00] 100.00%  2 / 2 index files loaded
+start scan on [/.snapshots_tmp_restic/root]
+start backup on [/.snapshots_tmp_restic/root]
+scan finished in 1.431s: 214907 files, 12.638 GiB
+
+Files:           1 new,     1 changed, 214905 unmodified
+Dirs:            0 new,     7 changed, 15318 unmodified
+Data Blobs:      1 new
+Tree Blobs:      8 new
+Added to the repository: 88.900 KiB (51.873 KiB stored)
+
+processed 214907 files, 12.638 GiB in 0:03
+snapshot 5b3a6ac4 saved
+Delete subvolume (no-commit): '/.snapshots_tmp_restic/root'
+Creating local btrfs snapshot
+Create a snapshot of '/home' in '/.snapshots_tmp_restic/home'
+Snapshot of /home created at /.snapshots_tmp_restic/home
+Sending incrementsl back up of /.snapshots_tmp_restic/home to sftp:resticuser@192.168.50.210:/srv/backups/my_machine/home
+open repository
+repository da8633e3 opened (version 2, compression level auto)
+lock repository
+using parent snapshot fcba43e9
+load index files
+[0:00] 100.00%  1 / 1 index files loaded
+start scan on [/.snapshots_tmp_restic/home]
+start backup on [/.snapshots_tmp_restic/home]
+scan finished in 1.169s: 154763 files, 20.835 GiB
+
+Files:         284 new,   128 changed, 154351 unmodified
+Dirs:           14 new,    86 changed, 14243 unmodified
+Data Blobs:    433 new
+Tree Blobs:     99 new
+Added to the repository: 68.053 MiB (34.121 MiB stored)
+
+processed 154763 files, 20.835 GiB in 0:02
+snapshot c3a67556 saved
+Delete subvolume (no-commit): '/.snapshots_tmp_restic/home'
+```
