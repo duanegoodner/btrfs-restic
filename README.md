@@ -237,10 +237,7 @@ Delete subvolume (no-commit): '/.tmp_snapshots/home'
 
 
 
-
-
-
-
+If we run the shell script a second time, the output will be similar. However, assuming we did not make significant changes to our local files between the two runs, the second run's time and dat summery will look like this for the backup of `/`:
 <pre><code>start backup on [/.tmp_snapshots/root]
 <b style="color: green;">scan finished in 1.431s: 214907 files, 12.638 GiB
 
@@ -254,6 +251,7 @@ processed 214907 files, 12.638 GiB in 0:03</b>
 snapshot 5b3a6ac4 saved
 </code></pre>
 
+and like this for the backup of `/home`:
 
 <pre><code>
 start backup on [/.tmp_snapshots/home]
@@ -268,3 +266,58 @@ Added to the repository: 68.053 MiB (34.121 MiB stored)
 processed 154763 files, 20.835 GiB in 0:02</b>
 snapshot c3a67556 saved
 </code></pre>
+
+The `scan finished` times for the backup of `/` are similar (1.541 seconds vs. 1.431 seconds), but since restic allows incremental backups with very fast de-duplication, the `processsed` time and data `Added to the repository` values are much smaller for the second run (24 s / 9.056 GiB vs. 3 s / 88.900 KiB) 
+
+Looking at the output from the second-run backup of `/home` we similar
+
+
+<style>
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  th, td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+  }
+  th {
+    background-color: #f2f2f2;
+  }
+  .center {
+    text-align: center;
+  }
+</style>
+
+<table>
+  <thead>
+    <tr>
+      <th rowspan="2">Run #</th>
+      <th colspan="2" class="center">Root</th>
+      <th colspan="2" class="center">Home</th>
+    </tr>
+    <tr>
+      <th>Processed Time</th>
+      <th>Data Added</th>
+      <th>Processed Time</th>
+      <th>Data Added</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>24 sec</td>
+      <td>12.638 GiB</td>
+      <td>83 s</td>
+      <td>19.646 GiB</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>3 s</td>
+      <td>88.900 KiB</td>
+      <td>2 s</td>
+      <td>68.053 MiB</td>
+    </tr>
+  </tbody>
+</table>
