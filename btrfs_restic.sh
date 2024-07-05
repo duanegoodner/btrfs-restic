@@ -41,7 +41,7 @@ check_preconditions() {
 
 create_log_file() {
   # Get the current date and time in the desired format
-  current_time=$(date +"%Y_%m_%d_%H_%M_%S")
+  current_time=$(date +"%Y_%m_%d_%H_%M_%S_%N")
 
   # Define the filename with the current time
   filename="restic-${current_time}.log"
@@ -88,7 +88,15 @@ backup() {
 
 }
 
+run () {
+  if [[ "$TIMESTAMP_LOG" == true ]]; then
+  backup 2>&1 | tee >(ts '[%Y-%m-%d %H:%M:%.S]' >> "$BTRFS_RESTIC_LOG_FILE")
+else
+  backup 2>&1
+fi
+}
+
 load_dot_env
 check_preconditions
 create_log_file
-backup 2>&1 | tee >(ts '[%Y-%m-%d %H:%M:%.S]' >> "$BTRFS_RESTIC_LOG_FILE")
+run
