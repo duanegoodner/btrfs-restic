@@ -6,8 +6,8 @@
 # Takes snapshots of BTRFS subvolumes and sends thethe snapshot content to a Restic repository.
 # See README.md for details.
 
-# shellcheck source=../btrfs_restic.env
-DOT_ENV_FILE=../btrfs_restic.env
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DOT_ENV_FILE="$SCRIPT_DIR/../btrfs_restic.env"
 
 # checks that required files and directory are present
 check_preconditions() {
@@ -32,6 +32,7 @@ check_preconditions() {
 # loads env file
 load_dot_env() {
   if [ -f "$DOT_ENV_FILE" ]; then
+    # shellcheck disable=SC1090
     source "$DOT_ENV_FILE"
   else
     echo ".env file not found." >&2
