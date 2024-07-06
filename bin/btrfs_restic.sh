@@ -1,18 +1,15 @@
 #!/bin/bash
 
+# btrfs_restic_backup.sh
+#
+# Description:
+# Takes snapshots of BTRFS subvolumes and sends thethe snapshot content to a Restic repository.
+# See README.md for details.
+
 # shellcheck source=../btrfs_restic.env
 DOT_ENV_FILE=../btrfs_restic.env
 
-load_dot_env() {
-
-  if [ -f "$DOT_ENV_FILE" ]; then
-    source "$DOT_ENV_FILE"
-  else
-    echo ".env file not found." >&2
-    exit 1
-  fi
-}
-
+# checks that required files and directory are present
 check_preconditions() {
   if [ ! -e "$DOT_ENV_FILE" ]; then
     echo ".env file not found." >&2
@@ -30,7 +27,16 @@ check_preconditions() {
     echo "$BTRFS_SNAPSHOTS_DIR (BTRFS_SNAPSHOTS_DIR in .env) not found." >&2
     exit 1
   fi
+}
 
+# loads env file
+load_dot_env() {
+  if [ -f "$DOT_ENV_FILE" ]; then
+    source "$DOT_ENV_FILE"
+  else
+    echo ".env file not found." >&2
+    exit 1
+  fi
 }
 
 create_log_file() {
@@ -46,7 +52,7 @@ create_log_file() {
   export BTRFS_RESTIC_LOG_FILE="$LOG_DIR"/"$filename"
 }
 
-# Function to create a snapshot
+# Creates a BTRFS snapshot=
 create_snapshot() {
   local source_mount=$1
   local snapshot_name=$2
@@ -61,6 +67,7 @@ create_snapshot() {
   fi
 }
 
+# Takes snapshots and sends to Restic repo
 backup() {
 
   export RESTIC_PASSWORD_FILE="$RESTIC_REPOS_PASSWORD_FILE"
@@ -82,6 +89,7 @@ backup() {
 
 }
 
+# Calls backup() with logging mode specified in env file
 run_backup () {
   if [[ "$TIMESTAMP_LOG" == true ]]; then
   backup 2>&1 | tee >(ts '[%Y-%m-%d %H:%M:%.S]' >> "$BTRFS_RESTIC_LOG_FILE")
