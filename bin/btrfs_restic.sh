@@ -1,18 +1,12 @@
 #!/bin/bash
 
-# btrfs_restic_backup.sh
-#
-# Description:
-# Takes snapshots of BTRFS subvolumes and sends thethe snapshot content to a Restic repository.
-# See README.md for details.
-
+# shellcheck source=../btrfs_restic.env
+DOT_ENV_FILE=../btrfs_restic.env
 
 load_dot_env() {
-  
-  local dot_env=$1
 
-  if [ -f "$dot_env" ]; then
-    source "$dot_env"
+  if [ -f "$DOT_ENV_FILE" ]; then
+    source "$DOT_ENV_FILE"
   else
     echo ".env file not found." >&2
     exit 1
@@ -96,3 +90,7 @@ else
 fi
 }
 
+load_dot_env
+check_preconditions
+create_log_file
+run_backup
