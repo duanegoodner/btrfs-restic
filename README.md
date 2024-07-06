@@ -175,15 +175,14 @@ LOG_DIR=./logs
 TIMESTAMP_LOG=false
 ```
 
-
 - Each item in `BTRFS` subvolumes is entered as `<mount point>=<subvolume name>`. We can get info about our subvolumes and mount points with:
     <pre><code><b style="color: green;">someuser@local-machine$</b> sudo btrfs subolume list /
     <b style="color: green;">someuser@local-machine$</b> sudo findmnt -nt btrfs
     </pre></code>
 
-- `btrfs_restic.sh` expects a `btrfs_restic.env` to be in the same directory as `btrfs_restic.sh`. If you want the `.env` file to be in a different location, modify line `DOT_ENV_FILE=btrfs_restic.env` in `btrfs_restic.sh`.
+- `btrfs_restic.sh` expects a `btrfs_restic.env` to be in the same directory as `btrfs_restic.sh`. If you want the `.env` file to be in a different location, modify line `DOT_ENV_FILE=btrfs_restic.env` in `btrfs_restic.sh` to `DOT_ENV_FILE=/absolute/path/of/env_filename.env`
 
-- The default value of `LOG_DIR=./logs` causes log files to written to a `logs` sub-directory that is a sibling to `btrfs_restic.sh`.
+- The default value of `LOG_DIR=../logs` causes log files to written to a `logs` sub-directory in the project root.
 
 - The default value of `TIMESTAMP_LOG=false` results in no line-level timestamping in the log files, but log filenames will still contain timestamp info. Setting `TIMESTAMP_LOG=true` will print timestamps on each line of the log file but will prevent restic's realtime updates during repository scans from displaying in the terminal. For large data transfers, this may give a user the incorrect impression that the program is hanging / stuck.
 
