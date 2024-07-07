@@ -10,29 +10,11 @@ Takes snapshots of BTRFS sub-volumes, then sends snapshotted data to a remote Re
 
 ## Motivation
 
-We want to set up an automated scheme to take snapshots of data on our local machine, and send this data to a remote backup server.
+We want an automated scheme to take snapshots of BTRFS subvolumes on our local machine, and send this data to a remote backup server.
 
-- BTRFS
-  - Advantages
-    - Snapshots are purely atomic
+It is possible to send BTRFS snapshots to a remote host using `btrfs send` and `btrfs receive`. However, this approach requires that the remote use BTRFS, and automating the transfer process can be complicated unless we allow ssh login as `root` on the remote. 
 
-  - Disadvantages
-    - 
-    - No built-in encryption
-
-Using a BTRFS filesystem on the local machine can be a good choice because BTRFS snapshots are purely atomic. However using the built-in `btrfs send` and `btrfs receive` for transfer to a remote host can be problematic as they require the remote host to also use BTRFS, and automating these commands is challenging if we are unable to log in as the `root` user on the remote.
-
-The Restic backup program is filesystem agnostic on the receiving server, automatically encrypts data prior to transfer, and implements very fast data deduplication for incremental backups. It is also relatively straightforward to configure restic for passwordless backups. However, unlike BTRFS, Restic's "snapshots" are not atomic.
-
-
-|                     | BTRFS          | Restic |
-| ------------------- |---------------| ------ |
-| Atomic snapshots    | yes           | no     |
-| Data tranfer: automatic encryption? | no            |   yes  |
-| Data transfer: remote filesystem flexibility   | BTRFS      |  Any filesystem that remote supprots |
-
-
-With a backup scheme that takes BTRFS snapshots on one system, and then sends data to a remote server via Restic, we can enjoy key advantages and avoid downsides of both BTRFS and Restic. 
+Using Restic for data transfer is compatible with essentially any filesystem on the remote. Configuring Restic to send automated, incremental backups is relatively straightforward. Although Restic snapshots are not purely atomic, since we are sending data from BTRFS snapshots (which are atomic), the data transferred by Restic still represents the state of the local system at a single point in time.
 
 ## Example
 
