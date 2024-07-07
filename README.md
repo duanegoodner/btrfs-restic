@@ -1,5 +1,5 @@
 # btrfs_restic
-Takes snapshots of BTRFS sub-volumes, then snapshotted data to a remote Restic repository.
+Takes snapshots of BTRFS sub-volumes, then sends snapshotted data to a remote Restic repository. Does not require BTRFS on the remote.
 
 ## Requirements
 - Local system:
@@ -10,9 +10,27 @@ Takes snapshots of BTRFS sub-volumes, then snapshotted data to a remote Restic r
 
 ## Motivation
 
-With BTRFS filesystems, we have the ability to take atomic snapshots of subvolumes. While it is possible to use `btrfs send` and `btrfs receive` to transfer snapshots between hosts, this requires both the sending and receiving host to use BTRFS. Getting a automated passwodless "BTRFS snapshot + BTRFS send/receive" schemes to work can also be challenging if we are unable log in as `root` on the receiving server.
+We want to set up an automated scheme to take snapshots of data on our local machine, and send this data to a remote backup server.
 
-The Restic backup program is filesystem agnostic on the receiving server, automatically encrypts data prior to transfer, and implements very fast data deduplication for incremental backups. However, unlike BTRFS, Restic's "snapshots" are not atomic.
+- BTRFS
+  - Advantages
+    - Snapshots are purely atomic
+
+  - Disadvantages
+    - 
+    - No built-in encryption
+
+Using a BTRFS filesystem on the local machine can be a good choice because BTRFS snapshots are purely atomic. However using the built-in `btrfs send` and `btrfs receive` for transfer to a remote host can be problematic as they require the remote host to also use BTRFS, and automating these commands is challenging if we are unable to log in as the `root` user on the remote.
+
+The Restic backup program is filesystem agnostic on the receiving server, automatically encrypts data prior to transfer, and implements very fast data deduplication for incremental backups. It is also relatively straightforward to configure restic for passwordless backups. However, unlike BTRFS, Restic's "snapshots" are not atomic.
+
+
+|                     | BTRFS          | Restic |
+| ------------------- |---------------| ------ |
+| Atomic snapshots    | yes           | no     |
+| Data tranfer: automatic encryption? | no            |   yes  |
+| Data transfer: remote filesystem flexibility   | BTRFS      |  Any filesystem that remote supprots |
+
 
 With a backup scheme that takes BTRFS snapshots on one system, and then sends data to a remote server via Restic, we can enjoy key advantages and avoid downsides of both BTRFS and Restic. 
 
