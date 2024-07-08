@@ -7,7 +7,7 @@
 # See README.md for details.
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-DOT_ENV_FILE="$SCRIPT_DIR/../btrfs_restic.env"
+DOT_ENV_FILE="$SCRIPT_DIR/../.env"
 
 # checks that required files and directory are present
 check_preconditions() {
