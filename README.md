@@ -1,6 +1,9 @@
 # btrfs_restic
 Takes snapshots of BTRFS sub-volumes, then sends snapshotted data to a remote Restic repository. Does not require BTRFS on the remote.
 
+## Project status
+Fully functional. Some manual setup required, as outlined below. Refinement is ongoing as we learn from running actual backups. Also plan to add scripts to automate data restoration.
+
 ## Requirements
 - Local system:
   - Linux machine with one or more BTRFS subvolumes. Packages: 
