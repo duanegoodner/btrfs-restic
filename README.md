@@ -18,11 +18,7 @@ Using Restic for data transfer is compatible with essentially any filesystem on 
 
 ## Example
 
-In this example, we have the following scenario:
-- `local-machine` has BTRFS subvolumes `@` mounted at `/`, and `@home` mounted at `/home`.
-- User account `someuser` on `local-machine`
-- Remote host `restic-server` at ip address `192.168.2.3` with user account `resticuser` that is a member of the `sudo` group. If this user does not have sudo privileges, there are workarounds, but we willl  not cover those here.
-
+In this example, our local machine has BTRFS subvolumes `@` mounted at `/`, and `@home` mounted at `/home`, and we have user account `resticuser` with sudo privileges on a remote server at ip address `192.168.2.3`.
 
 ### 1. Set up passwordless ssh
 
@@ -37,9 +33,6 @@ ssh-keygen -t ed25519 -f ~/.ssh/for_restic_demo
 ssh-copy-id -i ~/.ssh/for_restic_demo resticuser@192.168.2.3
 ```
 
-> [!NOTE]
-> If ssh password access  to `restic-server` is not allowed, the content of `~/.ssh/for_restic_demo.pub` will need to be manually copied into `/home/resticuser/.ssh/authorized_keys` on `restic-server`. 
-
 #### c) Update `~/.ssh/config` (recommended)
 
 Add the following to `~/.ssh/config` (create file if it does not already exist)
@@ -49,7 +42,6 @@ Host restic-server
         User restic
         IdentityFile /home/someuser/.ssh/for_restic_demo
 ```
-
 
 #### d) Add ssh key to our ssh agent (recommended)
 
@@ -75,8 +67,9 @@ chmod 0700 ~/bin/restic
 ```
 ### 4. Allow local user to run certain BTRFS commands without password
 
-<pre><code><b style="color: green;">someuser@local-machine$</b> sudo visudo</code></pre>
-
+```
+sudo visudo
+```
 File `/etc/sudoers.tmp` should open in a terminal editor (likely `nano`). Add the following lines near the end of file:
 ```bash
 someuser ALL=(ALL) NOPASSWD: /usr/bin/btrfs subvolume snapshot *
@@ -118,7 +111,6 @@ someuser ALL=(ALL) NOPASSWD: /usr/bin/btrfs subvolume delete /.tmp_snapshots/*
 > @includedir /etc/sudoers.d
 > ```
 
-
 ### 5. Create local directory for temporary storage of BTRFS snapshots
 For each subvolume we want to back up, our script created a BTRFS snapshot of that subvolume, sends the data to the restic repo, and then deletes the BTRFS snapshot. We need a fixed local location for these temporary snapshots for restic deduplication to work properly.
 
@@ -155,13 +147,13 @@ TIMESTAMP_LOG=false
 
 - The default value of `TIMESTAMP_LOG=false` results in no line-level timestamping in the log files, but log filenames will still contain timestamp info. Setting `TIMESTAMP_LOG=true` will print timestamps on each line of the log file but will prevent restic's realtime updates during repository scans from displaying in the terminal. For large data transfers, this may give a user the incorrect impression that the program is hanging / stuck.
 
-### 7. Initialize Repositories
+### 7. Initialize remote repositories 
 
 ```
 ./bin/server_init.sh
 ```
 
-### 8. Use `run_backup.sh`
+### 8. Use `run_backup.sh` to take BTRFS snapshots and send
 
 From the project root directory, we can run the shell script with:
 
@@ -255,35 +247,4 @@ snapshot c3a67556 saved
 
 Since restic backups are incremental with very fast data de-duplication, `Processsed Time` and `Data Added` values are much smaller for the second run
 
-
-<table>
-  <thead>
-    <tr>
-      <th rowspan="2">Run #</th>
-      <th colspan="2" class="center">Root Repo</th>
-      <th colspan="2" class="center">Home Repo</th>
-    </tr>
-    <tr>
-      <th>Process Time</th>
-      <th>Data Added</th>
-      <th>Process Time</th>
-      <th>Data Added</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>1</td>
-      <td>24 sec</td>
-      <td>12.638 GiB</td>
-      <td>83 sec</td>
-      <td>19.646 GiB</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>3 sec</td>
-      <td>88.900 KiB</td>
-      <td>2 sec</td>
-      <td>68.053 MiB</td>
-    </tr>
-  </tbody>
-</table>
+> [!NOTE] Each BTRFS snapshot is deleted after it's data is sent to the remote host.
