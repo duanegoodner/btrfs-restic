@@ -250,4 +250,5 @@ snapshot c3a67556 saved
 
 Since restic backups are incremental with very fast data de-duplication, `Processsed Time` and `Data Added` values are much smaller for the second run
 
-> [!NOTE] Each BTRFS snapshot is deleted after it's data is sent to the remote host.
+> [!NOTE]
+> Each BTRFS snapshot is deleted after it's data is sent to the remote host.
