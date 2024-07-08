@@ -122,11 +122,13 @@ sudo mkdir /.tmp_snapshots
 ```
 
 ### 6. Enter values in `btrfs_restic.env`  
+Create a .env file in the project root directory, with the following variable assignments:
+
 ```shell
 RESTIC_SERVER=192.168.2.3
 RESTIC_SERVER_USER=resticuser
 SSH_KEYFILE="$HOME"/.ssh/for_restic_demo
-RESTIC_REPOS_DIR=/srv/backups/my_machine/
+RESTIC_REPOS_DIR=/srv/backups/my_machine
 RESTIC_REPOS_PASSWORD_FILE="$HOME"/securefolder/restic_repo_password
 RESTIC_BINARY="$HOME"/bin/restic
 BTRFS_SNAPSHOTS_DIR=/.tmp_snapshots
@@ -145,8 +147,6 @@ TIMESTAMP_LOG=false
     ```
 
 - If you want the `.env` file to be in a location other than the project root, modify the line `DOT_ENV_FILE="$SCRIPT_DIR/../.env"` in `./bin/server_init.sh` and `./bin/server_init.sh`.
-
-- The default value of `LOG_DIR=../logs` causes log files to written to a `logs` sub-directory in the project root.
 
 - The default value of `TIMESTAMP_LOG=false` results in no line-level timestamping in the log files, but log filenames will still contain timestamp info. Setting `TIMESTAMP_LOG=true` will print timestamps on each line of the log file but will prevent restic's realtime updates during repository scans from displaying in the terminal. For large data transfers, this may give a user the incorrect impression that the program is hanging / stuck.
 
