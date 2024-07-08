@@ -5,6 +5,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 DOT_ENV_FILE="$SCRIPT_DIR/../.env"
 # shellcheck disable=SC1090
 source "$DOT_ENV_FILE"
+SERVER_SCRIPT_LOCAL_PATH="$SCRIPT_DIR/server_init.sh"
 
 # Initialize an empty array for SUBVOL_LIST
 SUBVOL_LIST=()
