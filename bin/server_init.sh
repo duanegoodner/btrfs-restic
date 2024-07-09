@@ -13,7 +13,7 @@ SUBVOL_LIST=()
 # Iterate over MOUNTPOINT_REPO_MAP and extract the subvolume names
 for entry in "${MOUNTPOINT_REPO_MAP[@]}"; do
   # Extract the part after the '=' character and add it to SUBVOL_LIST
-  subvol="${entry#*=}"
+  subvol="${entry#*:}"
   SUBVOL_LIST+=("$subvol")
 done
 

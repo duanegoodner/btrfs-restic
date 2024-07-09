@@ -133,14 +133,14 @@ RESTIC_REPOS_PASSWORD_FILE="$HOME"/securefolder/restic_repo_password
 RESTIC_BINARY="$HOME"/bin/restic
 BTRFS_SNAPSHOTS_DIR=/.tmp_snapshots
 MOUNTPOINT_REPO_MAP=(
-    "/=@"
-    "/home=@home"
+    "/:@"
+    "/home:@home"
 )
 LOG_DIR=./logs
 TIMESTAMP_LOG=false
 ```
 
-- Each item in `BTRFS` subvolumes is entered as `<mount point>=<subvolume name>`. We can get info about our subvolumes and mount points with:
+- Each item in `BTRFS` subvolumes is entered as `<mount point>:<subvolume name>`. We can get info about our subvolumes and mount points with:
     ```
     sudo btrfs subolume list /
     sudo findmnt -nt btrfs

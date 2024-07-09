@@ -89,7 +89,7 @@ backup() {
 
   # Loop through the mount points and create snapshots
   for entry in "${MOUNTPOINT_REPO_MAP[@]}"; do
-    IFS='=' read -r mount_point repo_name <<<"$entry"
+    IFS=':' read -r mount_point repo_name <<<"$entry"
     backup_subvol_to_repo "$mount_point" "$repo_name"
   done
 
