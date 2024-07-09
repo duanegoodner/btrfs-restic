@@ -68,25 +68,30 @@ create_btrfs_snapshot() {
   fi
 }
 
+backup_subvol_to_repo() {
+  local mount_point=$1
+  local repo_name=$2
+
+  echo "Creating local btrfs snapshot"
+  create_btrfs_snapshot "$mount_point" "$repo_name"
+
+  cur_repo=sftp:"$RESTIC_SERVER_USER"@"$RESTIC_SERVER":"$RESTIC_REPOS_DIR"/"$repo_name"
+  echo "Sending incremental back up of ${BTRFS_SNAPSHOTS_DIR}/${repo_name} to ${cur_repo}"
+  export RESTIC_PASSWORD_FILE="$RESTIC_REPOS_PASSWORD_FILE" 
+  "$RESTIC_BINARY" -r "${cur_repo}" --verbose backup "${BTRFS_SNAPSHOTS_DIR}/${repo_name}"
+  unset "$RESTIC_REPOS_PASSWORD_FILE"
+  sudo /usr/bin/btrfs subvolume delete "${BTRFS_SNAPSHOTS_DIR}/${repo_name}"
+
+}
+
 # Takes snapshots and sends to Restic repo
 backup() {
-
-  export RESTIC_PASSWORD_FILE="$RESTIC_REPOS_PASSWORD_FILE"
 
   # Loop through the mount points and create snapshots
   for entry in "${MOUNTPOINT_REPO_MAP[@]}"; do
     IFS='=' read -r mount_point repo_name <<<"$entry"
-
-    echo "Creating local btrfs snapshot"
-    cur_repo=sftp:"$RESTIC_SERVER_USER"@"$RESTIC_SERVER":"$RESTIC_REPOS_DIR"/"$repo_name"
-    create_btrfs_snapshot "$mount_point" "$repo_name"
-
-    echo "Sending incrementsl back up of ${BTRFS_SNAPSHOTS_DIR}/${repo_name} to ${cur_repo}"
-    "$HOME"/bin/restic_fullread -r "${cur_repo}" --verbose backup "${BTRFS_SNAPSHOTS_DIR}/${repo_name}"
-    sudo /usr/bin/btrfs subvolume delete "${BTRFS_SNAPSHOTS_DIR}/${repo_name}"
+    backup_subvol_to_repo "$mount_point" "$repo_name"
   done
-
-  unset "$RESTIC_RESTIC_REPOS_PASSWORD_FILE"
 
 }
 
