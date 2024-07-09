@@ -54,17 +54,17 @@ create_log_file() {
 }
 
 # Creates a BTRFS snapshot=
-create_snapshot() {
-  local source_mount=$1
+create_btrfs_snapshot() {
+  local mount_point=$1
   local snapshot_name=$2
   local destination="${BTRFS_SNAPSHOTS_DIR}/${snapshot_name}"
 
   # Create the snapshot
-  if sudo /usr/bin/btrfs subvolume snapshot "$source_mount" "$destination"; then
+  if sudo /usr/bin/btrfs subvolume snapshot "$mount_point" "$destination"; then
   # if [ $? -eq 0 ]; then
-    echo "Snapshot of $source_mount created at $destination"
+    echo "Snapshot of $mount_point created at $destination"
   else
-    echo "Failed to create snapshot of $source_mount"
+    echo "Failed to create snapshot of $mount_point"
   fi
 }
 
@@ -74,16 +74,16 @@ backup() {
   export RESTIC_PASSWORD_FILE="$RESTIC_REPOS_PASSWORD_FILE"
 
   # Loop through the mount points and create snapshots
-  for entry in "${BTRFS_SUBVOLUMES[@]}"; do
-    IFS='=' read -r mount_point snapshot_name <<<"$entry"
+  for entry in "${MOUNTPOINT_REPO_MAP[@]}"; do
+    IFS='=' read -r mount_point repo_name <<<"$entry"
 
     echo "Creating local btrfs snapshot"
-    cur_repo=sftp:"$RESTIC_SERVER_USER"@"$RESTIC_SERVER":"$RESTIC_REPOS_DIR"/"$snapshot_name"
-    create_snapshot "$mount_point" "$snapshot_name"
+    cur_repo=sftp:"$RESTIC_SERVER_USER"@"$RESTIC_SERVER":"$RESTIC_REPOS_DIR"/"$repo_name"
+    create_btrfs_snapshot "$mount_point" "$repo_name"
 
-    echo "Sending incrementsl back up of ${BTRFS_SNAPSHOTS_DIR}/${snapshot_name} to ${cur_repo}"
-    "$HOME"/bin/restic_fullread -r "${cur_repo}" --verbose backup "${BTRFS_SNAPSHOTS_DIR}/${snapshot_name}"
-    sudo /usr/bin/btrfs subvolume delete "${BTRFS_SNAPSHOTS_DIR}/${snapshot_name}"
+    echo "Sending incrementsl back up of ${BTRFS_SNAPSHOTS_DIR}/${repo_name} to ${cur_repo}"
+    "$HOME"/bin/restic_fullread -r "${cur_repo}" --verbose backup "${BTRFS_SNAPSHOTS_DIR}/${repo_name}"
+    sudo /usr/bin/btrfs subvolume delete "${BTRFS_SNAPSHOTS_DIR}/${repo_name}"
   done
 
   unset "$RESTIC_RESTIC_REPOS_PASSWORD_FILE"

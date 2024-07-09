@@ -10,8 +10,8 @@ SERVER_SCRIPT_LOCAL_PATH="$SCRIPT_DIR/create_repo_dirs.sh"
 # Initialize an empty array for SUBVOL_LIST
 SUBVOL_LIST=()
 
-# Iterate over BTRFS_SUBVOLUMES and extract the subvolume names
-for entry in "${BTRFS_SUBVOLUMES[@]}"; do
+# Iterate over MOUNTPOINT_REPO_MAP and extract the subvolume names
+for entry in "${MOUNTPOINT_REPO_MAP[@]}"; do
   # Extract the part after the '=' character and add it to SUBVOL_LIST
   subvol="${entry#*=}"
   SUBVOL_LIST+=("$subvol")

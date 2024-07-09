@@ -132,7 +132,7 @@ RESTIC_REPOS_DIR=/srv/backups/my_machine
 RESTIC_REPOS_PASSWORD_FILE="$HOME"/securefolder/restic_repo_password
 RESTIC_BINARY="$HOME"/bin/restic
 BTRFS_SNAPSHOTS_DIR=/.tmp_snapshots
-BTRFS_SUBVOLUMES=(
+MOUNTPOINT_REPO_MAP=(
     "/=@"
     "/home=@home"
 )
