@@ -40,21 +40,6 @@ load_dot_env() {
   fi
 }
 
-
-
-build_mountpoint_repo_map() {
-  # declare -n mountpoint_repo_list=$1
-
-  local -A mountpoint_repo_map
-
-  for entry in "${MOUNTPOINT_REPO_LIST[@]}"; do
-    IFS=':' read -r mount_point repo_name <<<"$entry"
-    mountpoint_repo_map[$mount_point]=$repo_name
-  done
-
-  echo "${mountpoint_repo_map[@]}"
-}
-
 create_log_file() {
   # Get the current date and time in the desired format
   current_time=$(date +"%Y_%m_%d_%H_%M_%S_%N")
@@ -83,26 +68,36 @@ create_btrfs_snapshot() {
   fi
 }
 
+send_btrfs_snapshot_to_restic() {
+  local repo_name=$1
+
+  local cur_repo=sftp:"$RESTIC_SERVER_USER"@"$RESTIC_SERVER":"$RESTIC_REPOS_DIR"/"$repo_name"
+  echo "Sending incremental back up of ${BTRFS_SNAPSHOTS_DIR}/${repo_name} to ${cur_repo}"
+  export RESTIC_PASSWORD_FILE="$RESTIC_REPOS_PASSWORD_FILE" 
+  "$RESTIC_BINARY" -r "${cur_repo}" --verbose backup "${BTRFS_SNAPSHOTS_DIR}/${repo_name}"
+  unset "$RESTIC_REPOS_PASSWORD_FILE"
+  # sudo /usr/bin/btrfs subvolume delete "${BTRFS_SNAPSHOTS_DIR}/${repo_name}"
+}
+
+delete_btrfs_snapshot() {
+  local repo_name=$1
+  sudo /usr/bin/btrfs subvolume delete "${BTRFS_SNAPSHOTS_DIR}/${repo_name}"
+}
+
 backup_subvol_to_repo() {
   local mount_point=$1
   local repo_name=$2
 
   echo "Creating local btrfs snapshot"
   create_btrfs_snapshot "$mount_point" "$repo_name"
-
-  cur_repo=sftp:"$RESTIC_SERVER_USER"@"$RESTIC_SERVER":"$RESTIC_REPOS_DIR"/"$repo_name"
-  echo "Sending incremental back up of ${BTRFS_SNAPSHOTS_DIR}/${repo_name} to ${cur_repo}"
-  export RESTIC_PASSWORD_FILE="$RESTIC_REPOS_PASSWORD_FILE" 
-  "$RESTIC_BINARY" -r "${cur_repo}" --verbose backup "${BTRFS_SNAPSHOTS_DIR}/${repo_name}"
-  unset "$RESTIC_REPOS_PASSWORD_FILE"
-  sudo /usr/bin/btrfs subvolume delete "${BTRFS_SNAPSHOTS_DIR}/${repo_name}"
+  send_btrfs_snapshot_to_restic "$repo_name"
+  delete_btrfs_snapshot "$repo_name"
 
 }
 
 # Takes snapshots and sends to Restic repo
 backup() {
 
-  # Loop through the mount points and create snapshots
   for entry in "${MOUNTPOINT_REPO_LIST[@]}"; do
     IFS=':' read -r mount_point repo_name <<<"$entry"
     backup_subvol_to_repo "$mount_point" "$repo_name"
@@ -123,4 +118,3 @@ load_dot_env
 check_preconditions
 create_log_file
 run_backup
-# build_mountpoint_repo_map 

@@ -5,31 +5,35 @@ serialize_map() {
     local serialized_map=""
 
     for key in "${!map[@]}"; do
-        serialized_map+="$key=${map[$key]},"
+        serialized_map+="$key:${map[$key]} "
     done
 
     # Remove trailing comma
-    serialized_map="${serialized_map%,}"
+    serialized_map="${serialized_map%' '}"
 
     echo "$serialized_map"
 }
 
 deserialize_map() {
     local serialized_map=$1
-    local -n map=$2
-    local IFS=','
+    declare -n deserialized_array="$2"
 
-    read -ra entries <<< "$serialized_map"
+    # Split the string by spaces
+    IFS=' ' read -r -a entries <<< "$serialized_map"
+
+    # Iterate over each entry
     for entry in "${entries[@]}"; do
-        IFS='=' read -r key value <<< "$entry"
-        map["$key"]="$value"
+        # Split the entry by ":"
+        IFS=':' read -r key value <<< "$entry"
+        # Add to associative array
+        deserialized_array["$key"]="$value"
     done
 }
 
-map_from_pairs_array() {
-    local separator="${2:-:}"
+serialized_map_from_pairs_array() {
+    local separator=":"
     local pairs_array=("${!1}")
-    local var_name=$3
+    local var_name=$2
     local -A output_map
 
     for entry in "${pairs_array[@]}"; do
@@ -55,7 +59,7 @@ get_vals() {
 
 deserialize_array() {
     local str="$1"
-    local -n arr=$2
+    declare -n arr=$2
     IFS=' ' read -r -a arr <<< "$str"
 }
 
@@ -89,23 +93,17 @@ MOUNTPOINT_REPO_LIST=(
 # serialized_str=$(serialize_array vals_list[@])
 # echo "$serialized_str"
 
+# serialized_mountpoint_repo_list=$(serialize_array MOUNTPOINT_REPO_LIST[@] )
+# echo "$serialized_mountpoint_repo_list"
+
+# echo break
+# deserialize_array "$serialized_mountpoint_repo_list" deserialized_mountpoint_repo_list
+# echo "${deserialized_mountpoint_repo_list[@]}"
+
 # latest quicktests end here
 
 #################
 
-# vals_list_str=$(get_vals "${MOUNTPOINT_REPO_LIST[@]}")
-# vals_list_array=$(deserialize_array "$vals_list_str")
-
-
-# serialized_mountpoint_repo_list=$(serialize_array "${MOUNTPOINT_REPO_LIST[@]}")
-# echo "$serialized_mountpoint_repo_list"
-
-# echo break
-# deserialized_mountpoint_repo_list=$(deserialize_array "$serialized_mountpoint_repo_list")
-# echo "$deserialized_mountpoint_repo_list"
-
-# get_vals MOUNTPOINT_REPO_LIST[@] SUBVOL_LIST_STR
-# echo "$SUBVOL_LIST_STR"
 
 # map_from_pairs_array MOUNTPOINT_REPO_LIST[@] ":" "MOUNTPOINT_REPO_MAP"
 # echo "Serialized map stored in MOUNTPOINT_REPO_MAP: $MOUNTPOINT_REPO_MAP"
@@ -117,8 +115,5 @@ MOUNTPOINT_REPO_LIST=(
 # for key in "${!deserialized_map[@]}"; do
 #     echo "$key => ${deserialized_map[$key]}"
 # done
-
-# get_vals MOUNTPOINT_REPO_LIST[@] MY_VALS
-# echo "$MY_VALS"
 
 

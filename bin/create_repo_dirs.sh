@@ -13,11 +13,8 @@ else
     echo "Directory $RESTIC_REPOS_DIR created"
 fi
 
-# Convert SUBVOL_LIST_STR back into an array
-IFS=' ' read -r -a SUBVOL_LIST <<< "$SUBVOL_LIST_SERIALIZED"
-# echo "$SUBVOL_LIST_SERIALIZED"
-# SUBVOL_LIST=$(deserialize_array "$SUBVOL_LIST_SERIALIZED")
-# echo "$SUBVOL_LIST"
+declare -a SUBVOL_LIST
+deserialize_array "$SUBVOL_LIST_SERIALIZED" SUBVOL_LIST
 
 for subvol in "${SUBVOL_LIST[@]}"; do
     if [ -d "${RESTIC_REPOS_DIR}/${subvol}" ]; then
