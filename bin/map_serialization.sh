@@ -49,14 +49,14 @@ MOUNTPOINT_REPO_LIST=(
   "/var/tmp:@var_tmp"
 )
 
-build_mountpoint_repo_map "${MOUNTPOINT_REPO_LIST[@]}"
+# build_mountpoint_repo_map "${MOUNTPOINT_REPO_LIST[@]}"
 
-echo "Serialized map: $MOUNTPOINT_REPO_MAP"
+# echo "Serialized map: $MOUNTPOINT_REPO_MAP"
 
-declare -A deserialized_map
-deserialize_map "$MOUNTPOINT_REPO_MAP" deserialized_map
+# declare -A deserialized_map
+# deserialize_map "$MOUNTPOINT_REPO_MAP" deserialized_map
 
-echo "Deserialized map:"
-for key in "${!deserialized_map[@]}"; do
-    echo "$key => ${deserialized_map[$key]}"
-done
+# echo "Deserialized map:"
+# for key in "${!deserialized_map[@]}"; do
+#     echo "$key => ${deserialized_map[$key]}"
+# done
