@@ -1,38 +1,46 @@
 #!/bin/bash
 
+script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-DOT_ENV_FILE="$SCRIPT_DIR/../.env"
+# build path to .env and import
+source "$script_dir/../.env"
+
+# build path to utils.sh and import
+utils_script="$script_dir/utils.sh"
 # shellcheck disable=SC1090
-source "$DOT_ENV_FILE"
-UTILS_SCRIPT_LOCAL_PATH="$SCRIPT_DIR/utils.sh"
-# shellcheck disable=SC1090
-source "$UTILS_SCRIPT_LOCAL_PATH"
+source "$utils_script"
 
-SERVER_SCRIPT_LOCAL_PATH="$SCRIPT_DIR/create_repo_dirs.sh"
+# build path to create_repo_dirs.sh (will need to run via ssh on server) 
+repo_dir_creation_script="$script_dir/create_repo_dirs.sh"
 
-# store the "values" from MOUNT_POINT_REPO_LIST as serialized string
-SUBVOL_LIST_SERIALIZED=$(get_vals "${MOUNTPOINT_REPO_LIST[@]}")
-deserialize_array "$SUBVOL_LIST_SERIALIZED" SUBVOL_LIST
+# store the "values" from MOUNT_POINT_REPO_LIST as serialized string, then deserialize into array
+subvol_list_serialized=$(get_vals "${MOUNTPOINT_REPO_LIST[@]}")
+declare -a subvol_list
+deserialize_array "$subvol_list_serialized" subvol_list
 
-# shellcheck disable=SC2087
-ssh -i "$SSH_KEYFILE" "$RESTIC_SERVER_USER@$RESTIC_SERVER" 'sudo -S bash -s' << EOF
+
+# ssh into server and run create_repo_dirs.sh to create directories that will be used as restic repos
+ssh_commands=$(cat <<EOF
 $(zenity --password --title="sudo on $RESTIC_SERVER" --text="Enter sudo password")
 export RESTIC_REPOS_DIR="$RESTIC_REPOS_DIR"
-export SUBVOL_LIST_SERIALIZED="$SUBVOL_LIST_SERIALIZED"
+export SUBVOL_LIST_SERIALIZED="$subvol_list_serialized"
 export RESTIC_SERVER_USER="$RESTIC_SERVER_USER"
-$(cat "$UTILS_SCRIPT_LOCAL_PATH")
-$(cat "$SERVER_SCRIPT_LOCAL_PATH")
+$(cat "$utils_script")
+$(cat "$repo_dir_creation_script")
 EOF
+)
+# shellcheck disable=SC2087
+ssh -i "$SSH_KEYFILE" "$RESTIC_SERVER_USER@$RESTIC_SERVER" 'sudo -S bash -s' <<< "$ssh_commands"
 
-
-# declare SUBVOL_LIST
-# deserialize_list SUBVOL_LIST_STR SUBVOL_LIST
-# IFS=' ' read -r -a SUBVOL_LIST <<< "$SUBVOL_LIST_STR"
-
-for repo_name in "${SUBVOL_LIST[@]}"; do
+initialize_repo() {
+  local repo_name=$1
   cur_repo=sftp:"$RESTIC_SERVER_USER"@"$RESTIC_SERVER":"$RESTIC_REPOS_DIR"/"$repo_name"
   "$RESTIC_BINARY" -r "$cur_repo" init --password-file "$RESTIC_REPOS_PASSWORD_FILE"
+}
+
+# Initialize restic repos. Calls are made on local machine, using sftp paths to repos 
+for repo_name in "${subvol_list[@]}"; do
+  initialize_repo "$repo_name"
 done
 
 
