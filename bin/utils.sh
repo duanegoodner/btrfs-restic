@@ -77,17 +77,21 @@ MOUNTPOINT_REPO_LIST=(
 )
 
 # Capture the output into a string
-vals_str=$(get_vals "${MOUNTPOINT_REPO_LIST[@]}")
+# vals_str=$(get_vals "${MOUNTPOINT_REPO_LIST[@]}")
 
 # Deserialize the string into an array
-deserialize_array "$vals_str" vals_list
+# deserialize_array "$vals_str" vals_list
 
 # Now you can access the elements correctly
-echo "${vals_list[1]}"
+# echo "${vals_list[1]}"
 
 # Serialize the array back into a string
-serialized_str=$(serialize_array vals_list[@])
-echo "$serialized_str"
+# serialized_str=$(serialize_array vals_list[@])
+# echo "$serialized_str"
+
+# latest quicktests end here
+
+#################
 
 # vals_list_str=$(get_vals "${MOUNTPOINT_REPO_LIST[@]}")
 # vals_list_array=$(deserialize_array "$vals_list_str")
