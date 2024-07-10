@@ -40,6 +40,21 @@ load_dot_env() {
   fi
 }
 
+
+
+build_mountpoint_repo_map() {
+  # declare -n mountpoint_repo_list=$1
+
+  local -A mountpoint_repo_map
+
+  for entry in "${MOUNTPOINT_REPO_LIST[@]}"; do
+    IFS=':' read -r mount_point repo_name <<<"$entry"
+    mountpoint_repo_map[$mount_point]=$repo_name
+  done
+
+  echo "${mountpoint_repo_map[@]}"
+}
+
 create_log_file() {
   # Get the current date and time in the desired format
   current_time=$(date +"%Y_%m_%d_%H_%M_%S_%N")
@@ -88,7 +103,7 @@ backup_subvol_to_repo() {
 backup() {
 
   # Loop through the mount points and create snapshots
-  for entry in "${MOUNTPOINT_REPO_MAP[@]}"; do
+  for entry in "${MOUNTPOINT_REPO_LIST[@]}"; do
     IFS=':' read -r mount_point repo_name <<<"$entry"
     backup_subvol_to_repo "$mount_point" "$repo_name"
   done
@@ -106,5 +121,6 @@ fi
 
 load_dot_env
 check_preconditions
-create_log_file
-run_backup
+# create_log_file
+# run_backup
+build_mountpoint_repo_map 
