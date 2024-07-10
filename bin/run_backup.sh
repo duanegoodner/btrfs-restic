@@ -121,6 +121,6 @@ fi
 
 load_dot_env
 check_preconditions
-# create_log_file
-# run_backup
-build_mountpoint_repo_map 
+create_log_file
+run_backup
+# build_mountpoint_repo_map 
