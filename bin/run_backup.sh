@@ -60,6 +60,7 @@ get_args() {
   while [[ "$#" -gt 0 ]]; do
     case $1 in
     --paths=*) custom_paths="${1#*=}" ;;
+    --tag=*) tag="${1#*=}" ;;
     *)
       echo "Unknown parameter passed: $1"
       exit 1
@@ -134,7 +135,11 @@ send_btrfs_snapshot_to_restic() {
   local cur_repo=sftp:"$RESTIC_SERVER_USER"@"$RESTIC_SERVER":"$RESTIC_REPOS_DIR"/"$repo_name"
   echo "Sending incremental back up of ${BTRFS_SNAPSHOTS_DIR}/${repo_name} to ${cur_repo}"
   export RESTIC_PASSWORD_FILE="$RESTIC_REPOS_PASSWORD_FILE"
-  "$RESTIC_BINARY" -r "${cur_repo}" --verbose backup "${BTRFS_SNAPSHOTS_DIR}/${repo_name}"
+  if [ -n "$tag" ]; then
+    "$RESTIC_BINARY" -r "${cur_repo}" --verbose backup "${BTRFS_SNAPSHOTS_DIR}/${repo_name}" --tag "$tag"
+  else
+    "$RESTIC_BINARY" -r "${cur_repo}" --verbose backup "${BTRFS_SNAPSHOTS_DIR}/${repo_name}"
+  fi
   unset "$RESTIC_REPOS_PASSWORD_FILE"
   # sudo /usr/bin/btrfs subvolume delete "${BTRFS_SNAPSHOTS_DIR}/${repo_name}"
 }
@@ -183,6 +188,7 @@ load_dot_env
 load_utils
 check_preconditions
 get_args "$@"
+echo "tag=$tag"
 declare serialized_backup_map
 serialized_backup_map=$(get_backup_map)
 echo "$serialized_backup_map"
