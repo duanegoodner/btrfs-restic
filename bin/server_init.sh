@@ -4,12 +4,13 @@
 
 # identify directory of this file
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+lib_dir="$script_dir/../lib"
 
 # build path to .env and import
 source "$script_dir/../.env"
 
 # build path to utils.sh and import
-utils_script="$script_dir/utils.sh"
+utils_script="$lib_dir/utils.sh"
 # shellcheck disable=SC1090
 source "$utils_script"
 

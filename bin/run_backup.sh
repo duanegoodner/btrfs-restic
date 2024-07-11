@@ -7,8 +7,9 @@
 # See README.md for details.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB_DIR="$SCRIPT_DIR"/../lib
 DOT_ENV_FILE="$SCRIPT_DIR/../.env"
-UTILS_FILE="$SCRIPT_DIR/utils.sh"
+UTILS_FILE="$LIB_DIR/utils.sh"
 
 
 # checks that required files and directory are present
