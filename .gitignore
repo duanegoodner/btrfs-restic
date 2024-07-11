@@ -1,5 +1,2 @@
-*.env
-*password*
-
-# Default setting in .env creates log dir in repo root
+*btrfs_restic.env
 /logs/
