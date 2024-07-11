@@ -1,10 +1,11 @@
 #!/bin/bash
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB_DIR="$SCRIPT_DIR/../lib"
 
 # Define the paths to your scripts
-SERVER_INIT_SCRIPT="$SCRIPT_DIR/server_init.sh"
-RUN_BACKUP_SCRIPT="$SCRIPT_DIR/run_backup.sh"
+SERVER_INIT_SCRIPT="$LIB_DIR/server_init.sh"
+RUN_BACKUP_SCRIPT="$LIB_DIR/run_backup.sh"
 
 # Function to display usage information
 usage() {
