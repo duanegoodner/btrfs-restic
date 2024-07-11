@@ -26,6 +26,7 @@ deserialize_map() {
         # Split the entry by ":"
         IFS=':' read -r key value <<< "$entry"
         # Add to associative array
+        # shellcheck disable=SC2034
         deserialized_array["$key"]="$value"
     done
 }
@@ -35,13 +36,14 @@ serialized_map_from_pairs_array() {
     local pairs_array=("${!1}")
     local var_name=$2
     local -A output_map
+    local serialized_map
 
     for entry in "${pairs_array[@]}"; do
         IFS="$separator" read -r mount_point repo_name <<< "$entry"
         output_map["$mount_point"]="$repo_name"
     done
 
-    local serialized_map=$(serialize_map output_map)
+    serialized_map=$(serialize_map output_map)
     eval export "$var_name"="'$serialized_map'"
 }
 
@@ -79,6 +81,14 @@ MOUNTPOINT_REPO_LIST=(
   "/var/spool:@var_spool"
   "/var/tmp:@var_tmp"
 )
+
+
+# serialized_map_from_pairs_array MOUNTPOINT_REPO_LIST[@] "SERIALIZED_MOUNTPOINT_REPO_MAP"
+# echo "$SERIALIZED_MOUNTPOINT_REPO_MAP"
+
+# alternate_serialized=$(serialize_array MOUNTPOINT_REPO_LIST[@])
+# echo "$alternate_serialized"
+
 
 # Capture the output into a string
 # vals_str=$(get_vals "${MOUNTPOINT_REPO_LIST[@]}")
