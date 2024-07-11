@@ -15,7 +15,7 @@ utils_script="$lib_dir/utils.sh"
 source "$utils_script"
 
 # build path to create_repo_dirs.sh (will need to run via ssh on server) 
-repo_dir_creation_script="$script_dir/create_repo_dirs.sh"
+repo_dir_creation_script="$lib_dir/create_repo_dirs.sh"
 
 # store the "values" from MOUNT_POINT_REPO_LIST as serialized string, then deserialize into array
 subvol_list_serialized=$(get_vals "${MOUNTPOINT_REPO_LIST[@]}")
