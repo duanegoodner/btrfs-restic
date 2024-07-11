@@ -8,7 +8,7 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LIB_DIR="$SCRIPT_DIR"/../lib
-DOT_ENV_FILE="$SCRIPT_DIR/../.env"
+DOT_ENV_FILE="$SCRIPT_DIR/../etc/.env"
 UTILS_FILE="$LIB_DIR/utils.sh"
 
 
