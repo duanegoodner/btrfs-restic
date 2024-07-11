@@ -1,0 +1,80 @@
+#!/bin/bash
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Define the paths to your scripts
+SERVER_INIT_SCRIPT="$SCRIPT_DIR/server_init.sh"
+RUN_BACKUP_SCRIPT="$SCRIPT_DIR/run_backup.sh"
+
+# Function to display usage information
+usage() {
+    echo "Usage: $0 {init|backup} [--paths <paths>] [--tag <tag>]"
+    exit 1
+}
+
+# Ensure at least one argument is provided
+if [ $# -lt 1 ]; then
+    usage
+fi
+
+# Parse the main command
+COMMAND=$1
+shift
+
+case $COMMAND in
+    init)
+        # Call the server_init.sh script
+        $SERVER_INIT_SCRIPT
+        ;;
+    backup)
+        # Initialize optional arguments
+        PATHS=""
+        TAG=""
+        
+        # Parse optional arguments
+        while [[ $# -gt 0 ]]; do
+            echo "Parsing argument: $1"  # Debugging output
+            case $1 in
+                --paths)
+                    if [[ -z $2 || $2 == --* ]]; then
+                        echo "Error: --paths requires a value"
+                        usage
+                    fi
+                    PATHS=$2
+                    shift 2
+                    ;;
+                --tag)
+                    if [[ -z $2 || $2 == --* ]]; then
+                        echo "Error: --tag requires a value"
+                        usage
+                    fi
+                    TAG=$2
+                    shift 2
+                    ;;
+                *)
+                    echo "Unknown option: $1"
+                    usage
+                    ;;
+            esac
+        done
+        
+        # Debugging output to verify variables
+        echo "PATHS: $PATHS"
+        echo "TAG: $TAG"
+        
+        # Construct the command to run run_backup.sh with optional arguments
+        CMD="$RUN_BACKUP_SCRIPT"
+        [ -n "$PATHS" ] && CMD="$CMD --paths \"$PATHS\""
+        [ -n "$TAG" ] && CMD="$CMD --tag \"$TAG\""
+        
+        # Debugging output
+        echo "Executing command: $CMD"
+        
+        # Execute the command
+        eval "$CMD"
+        ;;
+    *)
+        echo "Unknown command: $COMMAND"
+        usage
+        ;;
+esac

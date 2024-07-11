@@ -54,20 +54,34 @@ load_utils() {
 }
 
 get_args() {
-  # Default value for custom_paths
+  # Default values
   custom_paths=""
+  tag=""
 
   # Parse command line arguments
   while [[ "$#" -gt 0 ]]; do
     case $1 in
-    --paths=*) custom_paths="${1#*=}" ;;
-    --tag=*) tag="${1#*=}" ;;
-    *)
-      echo "Unknown parameter passed: $1"
-      exit 1
-      ;;
+      --paths)
+        if [[ -z $2 || $2 == --* ]]; then
+            echo "Error: --paths requires a value"
+            exit 1
+        fi
+        custom_paths="$2"
+        shift 2
+        ;;
+      --tag)
+        if [[ -z $2 || $2 == --* ]]; then
+            echo "Error: --tag requires a value"
+            exit 1
+        fi
+        tag="$2"
+        shift 2
+        ;;
+      *)
+        echo "Unknown parameter passed: $1"
+        exit 1
+        ;;
     esac
-    shift
   done
 }
 
