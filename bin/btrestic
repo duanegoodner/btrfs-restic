@@ -8,9 +8,23 @@ RUN_BACKUP_SCRIPT="$SCRIPT_DIR/run_backup.sh"
 
 # Function to display usage information
 usage() {
-    echo "Usage: $0 {init|backup} [--paths <paths>] [--tag <tag>]"
+    echo "Usage: $0 {init|backup} [options]"
+    echo
+    echo "Commands:"
+    echo "  init               Initialize the server"
+    echo "  backup             Run the backup"
+    echo "    --paths <paths>  Specify the paths to back up"
+    echo "    --tag <tag>      Specify a tag for the backup"
+    echo
+    echo "General Options:"
+    echo "  --help             Display this help message"
     exit 1
 }
+
+# Check if --help is passed as the first argument
+if [[ "$1" == "--help" ]]; then
+    usage
+fi
 
 # Ensure at least one argument is provided
 if [ $# -lt 1 ]; then
@@ -23,6 +37,11 @@ shift
 
 case $COMMAND in
     init)
+        # Ensure no additional arguments are provided
+        if [ $# -gt 0 ]; then
+            echo "Error: 'init' command does not accept any options"
+            usage
+        fi
         # Call the server_init.sh script
         $SERVER_INIT_SCRIPT
         ;;
@@ -51,6 +70,9 @@ case $COMMAND in
                     TAG=$2
                     shift 2
                     ;;
+                --help)
+                    usage
+                    ;;
                 *)
                     echo "Unknown option: $1"
                     usage
@@ -71,7 +93,7 @@ case $COMMAND in
         echo "Executing command: $CMD"
         
         # Execute the command
-        eval "$CMD"
+        eval $CMD
         ;;
     *)
         echo "Unknown command: $COMMAND"
