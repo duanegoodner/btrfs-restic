@@ -122,7 +122,7 @@ sudo mkdir /.tmp_snapshots
 ```
 
 ### 6. Enter values in `btrfs_restic.env`  
-Create a .env file in the project root directory, with the following variable assignments:
+Create file `./etc/btrfs_restic.env` (Note the path is under the project root, not under `/etc`)  with the following variable assignments:
 
 ```shell
 RESTIC_SERVER=192.168.2.3
@@ -146,14 +146,14 @@ TIMESTAMP_LOG=false
     sudo findmnt -nt btrfs
     ```
 
-- If you want the `.env` file to be in a location other than the project root, modify the line `DOT_ENV_FILE="$SCRIPT_DIR/../.env"` in `./bin/server_init.sh` and `./bin/server_init.sh`.
-
 - The default value of `TIMESTAMP_LOG=false` results in no line-level timestamping in the log files, but log filenames will still contain timestamp info. Setting `TIMESTAMP_LOG=true` will print timestamps on each line of the log file but will prevent restic's realtime updates during repository scans from displaying in the terminal. For large data transfers, this may give a user the incorrect impression that the program is hanging / stuck.
+
+
 
 ### 7. Initialize remote repositories 
 
 ```
-./bin/server_init.sh
+./bin/brestic init
 ```
 
 ### 8. Use `run_backup.sh` to take BTRFS snapshots and send
@@ -161,7 +161,7 @@ TIMESTAMP_LOG=false
 From the project root directory, we can run the shell script with:
 
 ```
-./bin/run_backup.sh
+./bin/brestic backup
 ```
 
 The first time the script runs, output will look something like this:
