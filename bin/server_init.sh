@@ -7,7 +7,7 @@ script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 lib_dir="$script_dir/../lib"
 
 # build path to .env and import
-source "$script_dir/../etc/.env"
+source "$script_dir/../etc/btrfs_restic.env"
 
 # build path to utils.sh and import
 utils_script="$lib_dir/utils.sh"
