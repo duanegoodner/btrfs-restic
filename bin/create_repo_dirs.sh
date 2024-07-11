@@ -1,9 +1,7 @@
 #! /bin/bash
 
-echo Create ropo dirs
-
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# source "$SCRIPT_DIR/utils.sh"
+# Creates directories (to be used as Restic repos) on server
+# This script is part of the ssh command that runs on the server (sent in server_init.sh)
 
 if [ -d "$RESTIC_REPOS_DIR" ]; then
     echo "Warning: $RESTIC_REPOS_DIR already exists. Proceeding with subdirectory creation" 

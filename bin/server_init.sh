@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Creates directories and initializes Restic repositories on remote server
+
+# identify directory of this file
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # build path to .env and import
@@ -32,6 +35,7 @@ EOF
 # shellcheck disable=SC2087
 ssh -i "$SSH_KEYFILE" "$RESTIC_SERVER_USER@$RESTIC_SERVER" 'sudo -S bash -s' <<< "$ssh_commands"
 
+# initializes a restic repository
 initialize_repo() {
   local repo_name=$1
   cur_repo=sftp:"$RESTIC_SERVER_USER"@"$RESTIC_SERVER":"$RESTIC_REPOS_DIR"/"$repo_name"
