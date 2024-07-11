@@ -6,8 +6,10 @@
 # Takes snapshots of BTRFS subvolumes and sends thethe snapshot content to a Restic repository.
 # See README.md for details.
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DOT_ENV_FILE="$SCRIPT_DIR/../.env"
+UTILS_FILE="$SCRIPT_DIR/utils.sh"
+
 
 # checks that required files and directory are present
 check_preconditions() {
@@ -40,6 +42,64 @@ load_dot_env() {
   fi
 }
 
+load_utils() {
+    if [ -f "$UTILS_FILE" ]; then
+    # shellcheck disable=SC1090
+    source "$UTILS_FILE"
+  else
+    echo "utils.sh file not found." >&2
+    exit 1
+  fi
+}
+
+get_args() {
+  # Default value for custom_paths
+  custom_paths=""
+
+  # Parse command line arguments
+  while [[ "$#" -gt 0 ]]; do
+    case $1 in
+    --paths=*) custom_paths="${1#*=}" ;;
+    *)
+      echo "Unknown parameter passed: $1"
+      exit 1
+      ;;
+    esac
+    shift
+  done
+}
+
+get_backup_map() {
+
+  # serialize array of key=mount_point:val=repo pairs defined in env file
+  local serialized_mountpoint_repo_map
+  serialized_mountpoint_repo_map=$(serialize_array MOUNTPOINT_REPO_LIST[@])
+
+  # convert serialized array of key:val pairs to associative array
+  local -A mountpoint_repo_map
+  deserialize_map "$serialized_mountpoint_repo_map" mountpoint_repo_map
+
+  local -A backup_map
+
+  # if we have custom_paths, only take key:val pairs with key in custom_paths
+  if [ -n "$custom_paths" ]; then
+    local -a custom_paths_array
+    deserialize_array "$custom_paths" custom_paths_array
+    for entry in "${custom_paths_array[@]}"; do
+      # shellcheck disable=SC2034
+      backup_map["$entry"]="${mountpoint_repo_map["$entry"]}"
+    done
+
+    serialize_map backup_map
+
+  else
+    # if no custom paths, we can just output serialized array of key:val pairs generated earlier
+    # b/c this is same form of serialized map with all key:val pairs
+    echo "$serialized_mountpoint_repo_map"
+  fi
+
+}
+
 create_log_file() {
   # Get the current date and time in the desired format
   current_time=$(date +"%Y_%m_%d_%H_%M_%S_%N")
@@ -61,7 +121,7 @@ create_btrfs_snapshot() {
 
   # Create the snapshot
   if sudo /usr/bin/btrfs subvolume snapshot "$mount_point" "$destination"; then
-  # if [ $? -eq 0 ]; then
+    # if [ $? -eq 0 ]; then
     echo "Snapshot of $mount_point created at $destination"
   else
     echo "Failed to create snapshot of $mount_point"
@@ -73,7 +133,7 @@ send_btrfs_snapshot_to_restic() {
 
   local cur_repo=sftp:"$RESTIC_SERVER_USER"@"$RESTIC_SERVER":"$RESTIC_REPOS_DIR"/"$repo_name"
   echo "Sending incremental back up of ${BTRFS_SNAPSHOTS_DIR}/${repo_name} to ${cur_repo}"
-  export RESTIC_PASSWORD_FILE="$RESTIC_REPOS_PASSWORD_FILE" 
+  export RESTIC_PASSWORD_FILE="$RESTIC_REPOS_PASSWORD_FILE"
   "$RESTIC_BINARY" -r "${cur_repo}" --verbose backup "${BTRFS_SNAPSHOTS_DIR}/${repo_name}"
   unset "$RESTIC_REPOS_PASSWORD_FILE"
   # sudo /usr/bin/btrfs subvolume delete "${BTRFS_SNAPSHOTS_DIR}/${repo_name}"
@@ -98,23 +158,33 @@ backup_subvol_to_repo() {
 # Takes snapshots and sends to Restic repo
 backup() {
 
-  for entry in "${MOUNTPOINT_REPO_LIST[@]}"; do
-    IFS=':' read -r mount_point repo_name <<<"$entry"
-    backup_subvol_to_repo "$mount_point" "$repo_name"
+  local serialized_backup_map=$1
+  local -A backup_map
+  deserialize_map "$serialized_backup_map" backup_map
+  for key in "${!backup_map[@]}"; do
+    # IFS=':' read -r mount_point repo_name <<<"$entry"
+    echo "path=$key"
+    echo "repo_name=${backup_map["$key"]}"
+    backup_subvol_to_repo "$key" "${backup_map["$key"]}"
   done
-
 }
 
 # Calls backup() with logging mode specified in env file
-run_backup () {
+run_backup() {
+  local serialized_backup_map=$1
   if [[ "$TIMESTAMP_LOG" == true ]]; then
-  backup 2>&1 | tee >(ts '[%Y-%m-%d %H:%M:%.S]' >> "$BTRFS_RESTIC_LOG_FILE")
-else
-  backup 2>&1
-fi
+    backup "$serialized_backup_map" 2>&1 | tee >(ts '[%Y-%m-%d %H:%M:%.S]' >>"$BTRFS_RESTIC_LOG_FILE")
+  else
+    backup "$serialized_backup_map" 2>&1
+  fi
 }
 
 load_dot_env
+load_utils
 check_preconditions
+get_args "$@"
+declare serialized_backup_map
+serialized_backup_map=$(get_backup_map)
+echo "$serialized_backup_map"
 create_log_file
-run_backup
+run_backup "$serialized_backup_map"
