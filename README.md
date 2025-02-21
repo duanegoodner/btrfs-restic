@@ -1,4 +1,4 @@
-# btrfs_restic
+# btrfs-restic
 Takes snapshots of BTRFS sub-volumes, then sends snapshotted data to a remote Restic repository. Does not require BTRFS on the remote.
 
 ## Project status
